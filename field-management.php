@@ -67,15 +67,54 @@
 					<ul class="default" style="padding-left: 40px;">
 						<li><a href="tournament-create.php"><strong>Criar Novo Torneio</a></strong></li>
 						<li><a href="tournament-management.php"><strong>Gestão de Torneios</a></strong></li>
-						<li><a href="field-management.php"><strong>Gestão de Campos</a></strong></li>
+						<li><a href="field-management.php"><strong style="color:#5c3ab7;">Gestão de Campos</a></strong></li>
 						<li><a href="tournament-list.php"><strong>Listar Torneios</a></strong></li>
 					</ul>
 				</section>
 			</div>
-			<div class="9u" style="padding-top: 30px;">
-				<img src="images/tournament.jpg" onerror = "this.src= 'images/tournament11.jpg';" style="max-width:95%;">
-				<p>Bem-vindo à secção de gestão de Torneios.</p>
+			<div class="9u" style="padding-top: 30px; padding-right: 40px;">
 				
+				<img src="images/camp3.jpg" onerror = "this.src= 'images/camp1.jpg';" style="max-width:100%;">
+				<h2>Campos de Futebol</h2>
+				<table style="width:100%">
+				<tr>
+					<th>Nome</th>
+					<th>Rua</th>
+					<th>Numero</th>
+					<th>Cidade</th>
+					<th>Coordenadas</th>
+					<th>Custo</th>
+				</tr>
+				<?php
+					require_once "connect.php";
+					mysqli_report(MYSQLI_REPORT_STRICT);// throw errors, not warnings
+				
+					$connection = new mysqli($host, $db_user, $db_password, $db_name);
+					if ($connection->connect_errno != 0){
+						throw new Exception(mysqli_connect_errno());
+					} else{
+						//echo "connected successfully";
+						$query = "SELECT * FROM futebolamador.campos;";
+						$result = $connection->query($query);
+					
+						while($row = mysqli_fetch_array($result)){
+							echo "<tr>";
+							echo "<td>" . $row['Nome_campo'] . "</td>";
+							echo "<td>" . $row['Rua'] . "</td>";
+							echo "<td>" . $row['Numero'] . "</td>";
+							echo "<td>" . $row['Cidade'] . "</td>";
+							echo "<td>" . $row['GPS'] . "</td>";
+							echo "<td>" . $row['Custo'] . "</td>";
+							echo "</tr>";
+						}
+						$connection->close();
+					}
+				?>
+				</table> 
+				
+				<a href="field-create.php">
+					<input type="button" value ="Adicionar Campo"> <br>
+				</a><br>
 			</div>
 		</div>
 	</body>
