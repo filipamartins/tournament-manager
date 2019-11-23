@@ -275,7 +275,7 @@ input[type="email"],
 select,
 textarea {
 	-moz-appearance: none;
-	-webkit-appearance: none;
+	/*-webkit-appearance: none;*/
 	-o-appearance: none;
 	-ms-appearance: none;
 	appearance: none;
@@ -979,13 +979,20 @@ input[type="button"].special:active,
 	background-color: #2c2f35;
 }
 
+/*ALTERAÇAO*/
+select.disabled,
+select:disabled {
+	background-color: rgb(235, 235, 228);
+}
+/*ALTERAÇAO*/
+
 input[type="submit"].disabled, input[type="submit"]:disabled,
 input[type="reset"].disabled,
 input[type="reset"]:disabled,
 input[type="button"].disabled,
 input[type="button"]:disabled,
 .button.disabled,
-.button:disabled {
+.button:disabled{
 	background-color: #444 !important;
 	box-shadow: inset 0 -0.15em 0 0 rgba(0, 0, 0, 0.15);
 	color: #fff !important;
