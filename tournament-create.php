@@ -18,12 +18,21 @@
 	// define variables and set to empty values
 	$tournamentnameErr =  $tournamentstartErr = $tournamentendErr =  $checkboxErr = $timeErr = $fieldErr = "";
 	$tournamentname = $tournamentstart = $tournamentend = "";
-	$monday = $tuesday = $wednesday = $thursday = $friday = $saturday = $sunday = "";
-	$disabled1 = $disabled2 = $disabled3 = $disabled4 = $disabled5 = $disabled6 = $disabled7 = "disabled";
-	$start1 = $start2 = $start3 = $start4 = $start5 = $start6 = $start7 = "";
-	$end1 = $end2 = $end3 = $end4 = $end5 = $end6 = $end7 = "";
-	$field1 = $field2 = $field3 = $field4 = $field5 = $field6 = $field7 = "";
+	$weekday = array("monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday");
+	$disabled = array(); 
+	$day = array();
+	$start = array();
+	$end = array();
+	$field = array();
 
+	for ($i = 0; $i < 7; $i++){
+		array_push($disabled, "disabled");
+		array_push($weekday, "");
+		array_push($start, "");
+		array_push($end, "");
+		array_push($field, "");
+	}
+	
 	$error = false;
 	$connection = connectToDatabase();
 		
@@ -48,122 +57,34 @@
 			$tournamentendErr = "Data de fim deve ser superior à data de inicio.";
 			$error = true;
 		}
+		
+		$daySelected = false; //checks if at least one day is selected
+		for ($i = 0; $i < 7; $i++){
+			if (!empty($_POST[$weekday[$i]])) 
+				$daySelected = true;
+		}
 
-		if (empty($_POST["monday"]) and empty($_POST["tuesday"]) and empty($_POST["wednesday"]) and empty($_POST["thursday"]) and 
-			empty($_POST["friday"]) and empty($_POST["saturday"]) and empty($_POST["sunday"])) {
+		if(!$daySelected){
 			$checkboxErr = "Obrigatório selecionar pelo menos um dia.";
 			$error = true;
 		}
 		else{
-			if(!empty($_POST["monday"])){
-				$monday = test_input($_POST["monday"]);
-				$start1 = test_input($_POST["start1"]);
-				$end1 = test_input($_POST["end1"]);
-				$field1 = test_input($_POST["field1"]);
-				if (empty($_POST["start1"]) or empty($_POST["end1"]) or empty($_POST["field1"])) {
-					$timeErr = "Obrigatório preencher hora de inicio de fim e campo.";
-					$error = true;
-				} 	
-				if($start1 != "" and $end1 != "" and $end1 <= $start1){
-					$timeErr = "Hora de fim deve ser superior à hora de inicio.";
-					$error = true;
+			for ($i = 0; $i < 7; $i++){
+				if(!empty($_POST[$weekday[$i]])){
+					$day[$i] = test_input($_POST[$weekday[$i]]);
+					$start[$i] = test_input($_POST["start".($i+1)]);
+					$end[$i] = test_input($_POST["end".($i+1)]);
+					$field[$i] = test_input($_POST["field".($i+1)]);
+					if ($start[$i] == "" or $end[$i] == "" or $field[$i] == "") {
+						$timeErr = "Obrigatório preencher hora de inicio de fim e campo.";
+						$error = true;
+					} 	
+					if($start[$i] != "" and $end[$i] != "" and $end[$i] <= $start[$i]){
+						$timeErr = "Hora de fim deve ser superior à hora de inicio.";
+						$error = true;
+					}
+					$disabled[$i] = "";
 				}
-				/* check if name only contains letters and whitespace
-				if (!preg_match("/^[a-zA-Z ]*$/", $field1)) {
-					$fieldErr = "Apenas são permitidas letras e espaços em branco para o nome do campo.";
-					$error = true;
-				}*/
-				$disabled1 = "";
-			}
-			if(!empty($_POST["tuesday"])){
-				$tuesday = test_input($_POST["tuesday"]);
-				$start2 = test_input($_POST["start2"]);
-				$end2 = test_input($_POST["end2"]);
-				$field2 = test_input($_POST["field2"]);
-				if (empty($_POST["start2"]) or empty($_POST["end2"]) or empty($_POST["field2"])) {
-					$timeErr = "Obrigatório preencher hora de inicio de fim e campo.";
-					$error = true;
-				}
-				if($start2 != "" and $end2 != "" and $end2 <= $start2){
-					$timeErr = "Hora de fim deve ser superior à hora de inicio.";
-					$error = true;
-				}
-				$disabled2 = "";
-			}
-			if(!empty($_POST["wednesday"])){
-				$wednesday = test_input($_POST["wednesday"]);
-				$start3 = test_input($_POST["start3"]);
-				$end3 = test_input($_POST["end3"]);
-				$field3 = test_input($_POST["field3"]);
-				if (empty($_POST["start3"]) or empty($_POST["end3"]) or empty($_POST["field3"])) {
-					$timeErr = "Obrigatório preencher hora de inicio de fim e campo.";
-					$error = true;
-				} 
-				if($start3 != "" and $end3 != "" and $end3 <= $start3){
-					$timeErr = "Hora de fim deve ser superior à hora de inicio.";
-					$error = true;
-				}
-				$disabled3 = "";
-			}
-			if(!empty($_POST["thursday"])){
-				$thursday = test_input($_POST["thursday"]);
-				$start4 = test_input($_POST["start4"]);
-				$end4 = test_input($_POST["end4"]);
-				$field4 = test_input($_POST["field4"]);
-				if (empty($_POST["start4"]) or empty($_POST["end4"]) or empty($_POST["field4"])) {
-					$timeErr = "Obrigatório preencher hora de inicio de fim e campo.";
-					$error = true;
-				} 
-				if($start4 != "" and $end4 != "" and $end4 <= $start4){
-					$timeErr = "Hora de fim deve ser superior à hora de inicio.";
-					$error = true;
-				}
-				$disabled4 = "";
-			}
-			if(!empty($_POST["friday"])){
-				$thursday = test_input($_POST["friday"]);
-				$start5 = test_input($_POST["start5"]);
-				$end5 = test_input($_POST["end5"]);
-				$field5 = test_input($_POST["field5"]);
-				if (empty($_POST["start5"]) or empty($_POST["end5"]) or empty($_POST["field5"])) {
-					$timeErr = "Obrigatório preencher hora de inicio de fim e campo.";
-					$error = true;
-				} 
-				if($start5 != "" and $end5 != "" and $end5 <= $start5){
-					$timeErr = "Hora de fim deve ser superior à hora de inicio.";
-					$error = true;
-				}
-				$disabled5 = "";
-			}
-			if(!empty($_POST["saturday"])){
-				$thursday = test_input($_POST["saturday"]);
-				$start6 = test_input($_POST["start6"]);
-				$end6 = test_input($_POST["end6"]);
-				$field6 = test_input($_POST["field6"]);
-				if (empty($_POST["start6"]) or empty($_POST["end6"]) or empty($_POST["field6"])) {
-					$timeErr = "Obrigatório preencher hora de inicio de fim e campo.";
-					$error = true;
-				} 
-				if($start6 != "" and $end6 != "" and $end6 <= $start6){
-					$timeErr = "Hora de fim deve ser superior à hora de inicio.";
-					$error = true;
-				}
-				$disabled6 = "";
-			}
-			if(!empty($_POST["sunday"])){
-				$thursday = test_input($_POST["sunday"]);
-				$start7 = test_input($_POST["start7"]);
-				$end7 = test_input($_POST["end7"]);
-				$field7 = test_input($_POST["field7"]);
-				if (empty($_POST["start7"]) or empty($_POST["end7"]) or empty($_POST["field7"])) {
-					$timeErr = "Obrigatório preencher hora de inicio de fim e campo.";
-					$error = true;
-				} 
-				if($start7 != "" and $end7 != "" and $end7 <= $start7){
-					$timeErr = "Hora de fim deve ser superior à hora de inicio.";
-					$error = true;
-				}
-				$disabled7 = "";
 			}
 		}
 	
@@ -173,10 +94,15 @@
 		if(!$error){
 			if ($connection->query($query) === TRUE) {
 				echo "New record created successfully";
+				$connection->close();
 			} else {
 				echo "Error: " . $query . "<br>" . $connection->error;
 			}
 		}
+		
+		$query = sprintf("INSERT INTO futebolamador.slot (`Hora_inicio`,`Hora_fim`,`Dia_semana`)
+			VALUES ('%s','%s','%s');", $tournamentname, $tournamentstart, $tournamentend);
+		
 	}
 
 	function connectToDatabase(){
@@ -199,7 +125,6 @@
 		return $data;
 	}
 
-
 	function fieldsDropdown(){
 		global $connection;
 		$query = "SELECT * FROM futebolamador.campos;";
@@ -211,7 +136,6 @@
 			$option++;
 		}
 	}
-
 ?>
 
 
@@ -306,11 +230,11 @@
 					<div style="padding-left:0px; width: 11.8%">
 						<input type="checkbox" name="monday"  value="true" id = "check1" onclick="getTime(1)" <?php if (isset($_POST['monday'])) echo "checked";?>>Segunda-Feira<br><br>
 							Inicio: <input type="time" name="start1" id = "start1" value=
-							"<?php echo $start1;?>" <?php echo $disabled1;?>><br>
+							"<?php echo $start[0];?>" <?php echo $disabled[0];?>><br>
 							Fim: <input type="time" name="end1" style="margin-left: 10px;" id = "end1" value=
-							"<?php echo $end1;?>" <?php echo $disabled1;?>><br><br>
+							"<?php echo $end[0];?>" <?php echo $disabled[0];?>><br><br>
 							Campo:<br>
-							<select name="field1" id="field1" <?php echo $disabled1;?>>
+							<select name="field1" id="field1" <?php echo $disabled[0];?>>
 								<?php
 									fieldsDropdown();
 								?>
@@ -319,11 +243,11 @@
 					<div style = "width: 14.5%">
 						<input type="checkbox" name="tuesday" value="true" id = "check2" onclick="getTime(2)" <?php if (isset($_POST['tuesday'])) echo "checked";?>>Terça-Feira<br><br>
 							Inicio: <input type="time" name="start2" id = "start2" value=
-							"<?php echo $start2;?>" <?php echo $disabled2;?>><br>
+							"<?php echo $start[1];?>" <?php echo $disabled[1];?>><br>
 							Fim: <input type="time" name="end2" style="margin-left: 10px;" id = "end2" value=
-							"<?php echo $end2;?>" <?php echo $disabled2;?>><br><br>
+							"<?php echo $end[1];?>" <?php echo $disabled[1];?>><br><br>
 							Campo:<br>
-							<select name="field2" id="field2" <?php echo $disabled2;?>>
+							<select name="field2" id="field2" <?php echo $disabled[1];?>>
 								<?php
 									fieldsDropdown();
 								?>
@@ -332,11 +256,11 @@
 					<div style = "width: 14.5%">
 						<input type="checkbox" name="wednesday" value="true" id = "check3" onclick="getTime(3)" <?php if (isset($_POST['wednesday'])) echo "checked";?>>Quarta-Feira<br><br>
 							Inicio: <input type="time" name="start3" id = "start3" value=
-							"<?php echo $start3;?>" <?php echo $disabled3;?>><br>
+							"<?php echo $start[2];?>" <?php echo $disabled[2];?>><br>
 							Fim: <input type="time" name="end3" style="margin-left: 10px;" id = "end3" value=
-							"<?php echo $end3;?>" <?php echo $disabled3;?>><br><br>
+							"<?php echo $end3;?>" <?php echo $disabled[2];?>><br><br>
 							Campo:<br>
-							<select name="field3" id="field3" <?php echo $disabled3;?>>
+							<select name="field3" id="field3" <?php echo $disabled[2];?>>
 								<?php
 									fieldsDropdown();
 								?>
@@ -345,11 +269,11 @@
 					<div style = "width: 14.5%">
 						<input type="checkbox" name="thursday" value="true" id = "check4" onclick="getTime(4)" <?php if (isset($_POST['thursday'])) echo "checked";?>>Quinta-Feira<br><br>
 							Inicio: <input type="time" name="start4" id = "start4" value=
-							"<?php echo $start4;?>" <?php echo $disabled4;?>><br>
+							"<?php echo $start[3];?>" <?php echo $disabled[3];?>><br>
 							Fim: <input type="time" name="end4" style="margin-left: 10px;" id = "end4" value=
-							"<?php echo $end4;?>" <?php echo $disabled4;?>><br><br>
+							"<?php echo $end[3];?>" <?php echo $disabled[3];?>><br><br>
 							Campo:<br>
-							<select name="field4" id="field4" <?php echo $disabled4;?>>
+							<select name="field4" id="field4" <?php echo $disabled[3];?>>
 								<?php
 									fieldsDropdown();
 								?>
@@ -358,11 +282,11 @@
 					<div style = "width: 14.5%">
 						<input type="checkbox" name="friday" value="true" id = "check5" onclick="getTime(5)" <?php if (isset($_POST['friday'])) echo "checked";?>>Sexta-Feira<br><br>
 							Inicio: <input type="time" name="start5" id = "start5" value=
-							"<?php echo $start5;?>" <?php echo $disabled5;?>><br>
+							"<?php echo $start[4];?>" <?php echo $disabled[4];?>><br>
 							Fim: <input type="time" name="end5" style="margin-left: 10px;" id = "end5" value=
-							"<?php echo $end5;?>" <?php echo $disabled5;?>><br><br>
+							"<?php echo $end[4];?>" <?php echo $disabled[4];?>><br><br>
 							Campo:<br>
-							<select name="field5" id="field5" <?php echo $disabled5;?>>
+							<select name="field5" id="field5" <?php echo $disabled[4];?>>
 								<?php
 									fieldsDropdown();
 								?>
@@ -371,11 +295,11 @@
 					<div style = "width: 14.5%">
 						<input type="checkbox" name="saturday" value="true" id = "check6" onclick="getTime(6)" <?php if (isset($_POST['saturday'])) echo "checked";?>>Sábado<br><br>
 							Inicio: <input type="time" name="start6" id = "start6" value=
-							"<?php echo $start6;?>" <?php echo $disabled6;?>><br>
+							"<?php echo $start[5];?>" <?php echo $disabled[5];?>><br>
 							Fim: <input type="time" name="end6" style="margin-left: 10px;" id = "end6" value=
-							"<?php echo $end6;?>" <?php echo $disabled6;?>><br><br>
+							"<?php echo $end[5];?>" <?php echo $disabled[5];?>><br><br>
 							Campo:<br>
-							<select name="field6" id="field6" <?php echo $disabled6;?>>
+							<select name="field6" id="field6" <?php echo $disabled[5];?>>
 								<?php
 									fieldsDropdown();
 								?>
@@ -384,11 +308,11 @@
 					<div style = "width: 14.5%">
 						<input type="checkbox" name="sunday" value="true" id = "check7" onclick="getTime(7)" <?php if (isset($_POST['sunday'])) echo "checked";?>>Domingo<br><br>
 							Inicio: <input type="time" name="start7" id = "start7" value=
-							"<?php echo $start7;?>" <?php echo $disabled7;?>><br>
+							"<?php echo $start[6];?>" <?php echo $disabled[6];?>><br>
 							Fim: <input type="time" name="end7" style="margin-left: 10px;" id = "end7" value=
-							"<?php echo $end7;?>" <?php echo $disabled7;?>><br><br>
+							"<?php echo $end[6];?>" <?php echo $disabled[6];?>><br><br>
 							Campo:<br>
-							<select name="field7" id="field7" <?php echo $disabled7;?>>
+							<select name="field7" id="field7" <?php echo $disabled[6];?>>
 								<?php
 									fieldsDropdown();
 								?>
