@@ -72,8 +72,8 @@
 					</ul>
 				</section>
 			</div>
-			<div class="9u" style="padding-top: 30px;">
-				<img src="images/tournament.jpg" onerror = "this.src= 'images/tournament11.jpg';" style="max-width:95%;">
+			<div class="9u" style="padding-top: 30px; padding-right: 40px;">
+				<img src="images/tournament4.jpg" onerror = "this.src= 'images/tournament11.jpg';" style="max-width:100%;">
 				<p>Bem-vindo à secção de gestão de Torneios.</p>
 				
 			</div>

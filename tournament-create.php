@@ -259,9 +259,9 @@ function test_input($data) {
 		<div class="3u">
 			<section class="sidebar">
 				<ul class="default" style="padding-left: 40px;">
-					<li><a href="tournament-create.php"><strong style="color:#5c3ab7;">Criar Novo Torneio</a></strong>
-					</li>
+					<li><a href="tournament-create.php"><strong style="color:#5c3ab7;">Criar Novo Torneio</a></strong></li>
 					<li><a href="tournament-management.php"><strong>Gestão de Torneios</a></strong></li>
+					<li><a href="field-management.php"><strong>Gestão de Campos</a></strong></li>
 					<li><a href="tournament-list.php"><strong>Listar Torneios</a></strong></li>
 				</ul>
 			</section>

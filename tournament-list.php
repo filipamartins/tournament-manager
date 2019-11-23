@@ -67,11 +67,12 @@
 					<ul class="default" style="padding-left: 40px;">
 						<li><a href="tournament-create.php"><strong>Criar Novo Torneio</a></strong></li>
 						<li><a href="tournament-management.php"><strong >Gestão de Torneios</a></strong></li>
+						<li><a href="field-management.php"><strong>Gestão de Campos</a></strong></li>
 						<li><a href="tournament-list.php"><strong style="color:#5c3ab7;">Listar Torneios</a></strong></li>
 					</ul>
 				</section>
 			</div>
-			<div class="9u" style="padding-top: 30px;">
+			<div class="9u" style="padding-top: 30px; padding-right: 40px;">
 				
 				
 			</div>
