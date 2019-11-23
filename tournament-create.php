@@ -15,205 +15,202 @@
 
 <?php
 
-// define variables and set to empty values
-$tournamentnameErr =  $tournamentstartErr = $tournamentendErr =  $checkboxErr = $timeErr = $fieldErr = "";
-$tournamentname = $tournamentstart = $tournamentend = "";
-$monday = $tuesday = $wednesday = $thursday = $friday = $saturday = $sunday = "";
-$disabled1 = $disabled2 = $disabled3 = $disabled4 = $disabled5 = $disabled6 = $disabled7 = "disabled";
-$start1 = $start2 = $start3 = $start4 = $start5 = $start6 = $start7 = "";
-$end1 = $end2 = $end3 = $end4 = $end5 = $end6 = $end7 = "";
-$field1 = $field2 = $field3 = $field4 = $field5 = $field6 = $field7 = "";
+	// define variables and set to empty values
+	$tournamentnameErr =  $tournamentstartErr = $tournamentendErr =  $checkboxErr = $timeErr = $fieldErr = "";
+	$tournamentname = $tournamentstart = $tournamentend = "";
+	$monday = $tuesday = $wednesday = $thursday = $friday = $saturday = $sunday = "";
+	$disabled1 = $disabled2 = $disabled3 = $disabled4 = $disabled5 = $disabled6 = $disabled7 = "disabled";
+	$start1 = $start2 = $start3 = $start4 = $start5 = $start6 = $start7 = "";
+	$end1 = $end2 = $end3 = $end4 = $end5 = $end6 = $end7 = "";
+	$field1 = $field2 = $field3 = $field4 = $field5 = $field6 = $field7 = "";
 
-$error = false;
-$connection = connectToDatabase();
+	$error = false;
+	$connection = connectToDatabase();
+		
+	if ($_SERVER["REQUEST_METHOD"] == "POST") {
+		$tournamentname = test_input($_POST["tournamentname"]);
+		$tournamentstart = test_input($_POST["tournamentstart"]);
+		$tournamentend = test_input($_POST["tournamentend"]);
+
+		if (empty($_POST["tournamentname"])) {
+			$tournamentnameErr = "Nome do torneio obrigatório.";
+			$error = true;
+		}
+		if (empty($_POST["tournamentstart"])) {
+			$tournamentstartErr = "Data de inicio obrigatória.";
+			$error = true;
+		}
+		if (empty($_POST["tournamentend"])) {
+			$tournamentendErr = "Data de fim obrigatória.";
+			$error = true;
+		} 
+		if($tournamentstart != "" and $tournamentend != "" and $tournamentend <= $tournamentstart){
+			$tournamentendErr = "Data de fim deve ser superior à data de inicio.";
+			$error = true;
+		}
+
+		if (empty($_POST["monday"]) and empty($_POST["tuesday"]) and empty($_POST["wednesday"]) and empty($_POST["thursday"]) and 
+			empty($_POST["friday"]) and empty($_POST["saturday"]) and empty($_POST["sunday"])) {
+			$checkboxErr = "Obrigatório selecionar pelo menos um dia.";
+			$error = true;
+		}
+		else{
+			if(!empty($_POST["monday"])){
+				$monday = test_input($_POST["monday"]);
+				$start1 = test_input($_POST["start1"]);
+				$end1 = test_input($_POST["end1"]);
+				$field1 = test_input($_POST["field1"]);
+				if (empty($_POST["start1"]) or empty($_POST["end1"]) or empty($_POST["field1"])) {
+					$timeErr = "Obrigatório preencher hora de inicio de fim e campo.";
+					$error = true;
+				} 	
+				if($start1 != "" and $end1 != "" and $end1 <= $start1){
+					$timeErr = "Hora de fim deve ser superior à hora de inicio.";
+					$error = true;
+				}
+				/* check if name only contains letters and whitespace
+				if (!preg_match("/^[a-zA-Z ]*$/", $field1)) {
+					$fieldErr = "Apenas são permitidas letras e espaços em branco para o nome do campo.";
+					$error = true;
+				}*/
+				$disabled1 = "";
+			}
+			if(!empty($_POST["tuesday"])){
+				$tuesday = test_input($_POST["tuesday"]);
+				$start2 = test_input($_POST["start2"]);
+				$end2 = test_input($_POST["end2"]);
+				$field2 = test_input($_POST["field2"]);
+				if (empty($_POST["start2"]) or empty($_POST["end2"]) or empty($_POST["field2"])) {
+					$timeErr = "Obrigatório preencher hora de inicio de fim e campo.";
+					$error = true;
+				}
+				if($start2 != "" and $end2 != "" and $end2 <= $start2){
+					$timeErr = "Hora de fim deve ser superior à hora de inicio.";
+					$error = true;
+				}
+				$disabled2 = "";
+			}
+			if(!empty($_POST["wednesday"])){
+				$wednesday = test_input($_POST["wednesday"]);
+				$start3 = test_input($_POST["start3"]);
+				$end3 = test_input($_POST["end3"]);
+				$field3 = test_input($_POST["field3"]);
+				if (empty($_POST["start3"]) or empty($_POST["end3"]) or empty($_POST["field3"])) {
+					$timeErr = "Obrigatório preencher hora de inicio de fim e campo.";
+					$error = true;
+				} 
+				if($start3 != "" and $end3 != "" and $end3 <= $start3){
+					$timeErr = "Hora de fim deve ser superior à hora de inicio.";
+					$error = true;
+				}
+				$disabled3 = "";
+			}
+			if(!empty($_POST["thursday"])){
+				$thursday = test_input($_POST["thursday"]);
+				$start4 = test_input($_POST["start4"]);
+				$end4 = test_input($_POST["end4"]);
+				$field4 = test_input($_POST["field4"]);
+				if (empty($_POST["start4"]) or empty($_POST["end4"]) or empty($_POST["field4"])) {
+					$timeErr = "Obrigatório preencher hora de inicio de fim e campo.";
+					$error = true;
+				} 
+				if($start4 != "" and $end4 != "" and $end4 <= $start4){
+					$timeErr = "Hora de fim deve ser superior à hora de inicio.";
+					$error = true;
+				}
+				$disabled4 = "";
+			}
+			if(!empty($_POST["friday"])){
+				$thursday = test_input($_POST["friday"]);
+				$start5 = test_input($_POST["start5"]);
+				$end5 = test_input($_POST["end5"]);
+				$field5 = test_input($_POST["field5"]);
+				if (empty($_POST["start5"]) or empty($_POST["end5"]) or empty($_POST["field5"])) {
+					$timeErr = "Obrigatório preencher hora de inicio de fim e campo.";
+					$error = true;
+				} 
+				if($start5 != "" and $end5 != "" and $end5 <= $start5){
+					$timeErr = "Hora de fim deve ser superior à hora de inicio.";
+					$error = true;
+				}
+				$disabled5 = "";
+			}
+			if(!empty($_POST["saturday"])){
+				$thursday = test_input($_POST["saturday"]);
+				$start6 = test_input($_POST["start6"]);
+				$end6 = test_input($_POST["end6"]);
+				$field6 = test_input($_POST["field6"]);
+				if (empty($_POST["start6"]) or empty($_POST["end6"]) or empty($_POST["field6"])) {
+					$timeErr = "Obrigatório preencher hora de inicio de fim e campo.";
+					$error = true;
+				} 
+				if($start6 != "" and $end6 != "" and $end6 <= $start6){
+					$timeErr = "Hora de fim deve ser superior à hora de inicio.";
+					$error = true;
+				}
+				$disabled6 = "";
+			}
+			if(!empty($_POST["sunday"])){
+				$thursday = test_input($_POST["sunday"]);
+				$start7 = test_input($_POST["start7"]);
+				$end7 = test_input($_POST["end7"]);
+				$field7 = test_input($_POST["field7"]);
+				if (empty($_POST["start7"]) or empty($_POST["end7"]) or empty($_POST["field7"])) {
+					$timeErr = "Obrigatório preencher hora de inicio de fim e campo.";
+					$error = true;
+				} 
+				if($start7 != "" and $end7 != "" and $end7 <= $start7){
+					$timeErr = "Hora de fim deve ser superior à hora de inicio.";
+					$error = true;
+				}
+				$disabled7 = "";
+			}
+		}
 	
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-	$tournamentname = test_input($_POST["tournamentname"]);
-	$tournamentstart = test_input($_POST["tournamentstart"]);
-	$tournamentend = test_input($_POST["tournamentend"]);
 
-	if (empty($_POST["tournamentname"])) {
-		$tournamentnameErr = "Nome do torneio obrigatório.";
-		$error = true;
-
-	if (empty($_POST["tournamentstart"])) {
-		$tournamentstartErr = "Data de inicio obrigatória.";
-		$error = true;
-	}
-
-	if (empty($_POST["tournamentend"])) {
-		$tournamentendErr = "Data de fim obrigatória.";
-		$error = true;
-	} 
-	if($tournamentstart != "" and $tournamentend != "" and $tournamentend <= $tournamentstart){
-		$tournamentendErr = "Data de fim deve ser superior à data de inicio.";
-		$error = true;
-	}
-
-	if (empty($_POST["monday"]) and empty($_POST["tuesday"]) and empty($_POST["wednesday"]) and empty($_POST["thursday"]) and 
-		empty($_POST["friday"]) and empty($_POST["saturday"]) and empty($_POST["sunday"])) {
-		$checkboxErr = "Obrigatório selecionar pelo menos um dia.";
-		$error = true;
-	}
-	else{
-		if(!empty($_POST["monday"])){
-			$monday = test_input($_POST["monday"]);
-			$start1 = test_input($_POST["start1"]);
-			$end1 = test_input($_POST["end1"]);
-			$field1 = test_input($_POST["field1"]);
-			if (empty($_POST["start1"]) or empty($_POST["end1"]) or empty($_POST["field1"])) {
-				$timeErr = "Obrigatório preencher hora de inicio de fim e campo.";
-				$error = true;
-			} 	
-			if($start1 != "" and $end1 != "" and $end1 <= $start1){
-				$timeErr = "Hora de fim deve ser superior à hora de inicio.";
-				$error = true;
+		$query = sprintf("INSERT INTO futebolamador.torneios (`Nome_torneio`,`Data_inicio`,`Data_fim`)
+			VALUES ('%s','%s','%s');", $tournamentname, $tournamentstart, $tournamentend);
+		if(!$error){
+			if ($connection->query($query) === TRUE) {
+				echo "New record created successfully";
+			} else {
+				echo "Error: " . $query . "<br>" . $connection->error;
 			}
-			/* check if name only contains letters and whitespace
-			if (!preg_match("/^[a-zA-Z ]*$/", $field1)) {
-				$fieldErr = "Apenas são permitidas letras e espaços em branco para o nome do campo.";
-				$error = true;
-			}*/
-			$disabled1 = "";
-		}
-		if(!empty($_POST["tuesday"])){
-			$tuesday = test_input($_POST["tuesday"]);
-			$start2 = test_input($_POST["start2"]);
-			$end2 = test_input($_POST["end2"]);
-			$field2 = test_input($_POST["field2"]);
-			if (empty($_POST["start2"]) or empty($_POST["end2"]) or empty($_POST["field2"])) {
-				$timeErr = "Obrigatório preencher hora de inicio de fim e campo.";
-				$error = true;
-			}
-			if($start2 != "" and $end2 != "" and $end2 <= $start2){
-				$timeErr = "Hora de fim deve ser superior à hora de inicio.";
-				$error = true;
-			}
-			$disabled2 = "";
-		}
-		if(!empty($_POST["wednesday"])){
-			$wednesday = test_input($_POST["wednesday"]);
-			$start3 = test_input($_POST["start3"]);
-			$end3 = test_input($_POST["end3"]);
-			$field3 = test_input($_POST["field3"]);
-			if (empty($_POST["start3"]) or empty($_POST["end3"]) or empty($_POST["field3"])) {
-				$timeErr = "Obrigatório preencher hora de inicio de fim e campo.";
-				$error = true;
-			} 
-			if($start3 != "" and $end3 != "" and $end3 <= $start3){
-				$timeErr = "Hora de fim deve ser superior à hora de inicio.";
-				$error = true;
-			}
-			$disabled3 = "";
-		}
-		if(!empty($_POST["thursday"])){
-			$thursday = test_input($_POST["thursday"]);
-			$start4 = test_input($_POST["start4"]);
-			$end4 = test_input($_POST["end4"]);
-			$field4 = test_input($_POST["field4"]);
-			if (empty($_POST["start4"]) or empty($_POST["end4"]) or empty($_POST["field4"])) {
-				$timeErr = "Obrigatório preencher hora de inicio de fim e campo.";
-				$error = true;
-			} 
-			if($start4 != "" and $end4 != "" and $end4 <= $start4){
-				$timeErr = "Hora de fim deve ser superior à hora de inicio.";
-				$error = true;
-			}
-			$disabled4 = "";
-		}
-		if(!empty($_POST["friday"])){
-			$thursday = test_input($_POST["friday"]);
-			$start5 = test_input($_POST["start5"]);
-			$end5 = test_input($_POST["end5"]);
-			$field5 = test_input($_POST["field5"]);
-			if (empty($_POST["start5"]) or empty($_POST["end5"]) or empty($_POST["field5"])) {
-				$timeErr = "Obrigatório preencher hora de inicio de fim e campo.";
-				$error = true;
-			} 
-			if($start5 != "" and $end5 != "" and $end5 <= $start5){
-				$timeErr = "Hora de fim deve ser superior à hora de inicio.";
-				$error = true;
-			}
-			$disabled5 = "";
-		}
-		if(!empty($_POST["saturday"])){
-			$thursday = test_input($_POST["saturday"]);
-			$start6 = test_input($_POST["start6"]);
-			$end6 = test_input($_POST["end6"]);
-			$field6 = test_input($_POST["field6"]);
-			if (empty($_POST["start6"]) or empty($_POST["end6"]) or empty($_POST["field6"])) {
-				$timeErr = "Obrigatório preencher hora de inicio de fim e campo.";
-				$error = true;
-			} 
-			if($start6 != "" and $end6 != "" and $end6 <= $start6){
-				$timeErr = "Hora de fim deve ser superior à hora de inicio.";
-				$error = true;
-			}
-			$disabled6 = "";
-		}
-		if(!empty($_POST["sunday"])){
-			$thursday = test_input($_POST["sunday"]);
-			$start7 = test_input($_POST["start7"]);
-			$end7 = test_input($_POST["end7"]);
-			$field7 = test_input($_POST["field7"]);
-			if (empty($_POST["start7"]) or empty($_POST["end7"]) or empty($_POST["field7"])) {
-				$timeErr = "Obrigatório preencher hora de inicio de fim e campo.";
-				$error = true;
-			} 
-			if($start7 != "" and $end7 != "" and $end7 <= $start7){
-				$timeErr = "Hora de fim deve ser superior à hora de inicio.";
-				$error = true;
-			}
-			$disabled7 = "";
 		}
 	}
-}
 
+	function connectToDatabase(){
+		require_once "connect.php";
+		mysqli_report(MYSQLI_REPORT_STRICT);// throw errors, not warnings
 
-$query = sprintf("INSERT INTO futebolamador.torneios (`Nome_torneio`,`Data_inicio`,`Data_fim`)
-	VALUES ('%s','%s','%s');", $tournamentname, $tournamentstart, $tournamentend);
-if(!$error){
-	if ($connection->query($query) === TRUE) {
-		echo "New record created successfully";
-	} else {
-		echo "Error: " . $query . "<br>" . $connection->error;
+		$connection = new mysqli($host, $db_user, $db_password, $db_name);
+		if ($connection->connect_errno != 0){
+			throw new Exception(mysqli_connect_errno());
+		} else{
+			//echo "connected successfully";
+		}
+		return $connection;
 	}
-}
 
-}
-
-function connectToDatabase(){
-	require_once "connect.php";
-	mysqli_report(MYSQLI_REPORT_STRICT);// throw errors, not warnings
-
-	$connection = new mysqli($host, $db_user, $db_password, $db_name);
-	if ($connection->connect_errno != 0){
-		throw new Exception(mysqli_connect_errno());
-	} else{
-		//echo "connected successfully";
+	function test_input($data) {
+		$data = trim($data);
+		$data = stripslashes($data);
+		$data = htmlspecialchars($data);
+		return $data;
 	}
-	return $connection;
-}
-
-function test_input($data) {
-	$data = trim($data);
-	$data = stripslashes($data);
-	$data = htmlspecialchars($data);
-	return $data;
-}
 
 
-function fieldsDropdown(){
-	global $connection;
-	$query = "SELECT * FROM futebolamador.campos;";
-	$result =  $connection->query($query);
-	$option = 1;
-	echo "<option value=\"\" selected hidden>Opção >></option>;";
-	while($row = mysqli_fetch_array($result)){
-		echo "<option value=\"".$row['Nome_campo']."\">Opção ".$option." &nbsp;&nbsp;&nbsp;>&nbsp; ".$row['Nome_campo']."</option>";
-		$option++;
+	function fieldsDropdown(){
+		global $connection;
+		$query = "SELECT * FROM futebolamador.campos;";
+		$result =  $connection->query($query);
+		$option = 1;
+		echo "<option value=\"\" selected hidden>Opção >></option>;";
+		while($row = mysqli_fetch_array($result)){
+			echo "<option value=\"".$row['Nome_campo']."\">Opção ".$option." &nbsp;&nbsp;&nbsp;>&nbsp; ".$row['Nome_campo']."</option>";
+			$option++;
+		}
 	}
-}
 
 ?>
 
