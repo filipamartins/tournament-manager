@@ -73,7 +73,44 @@
 				</section>
 			</div>
 			<div class="9u" style="padding-top: 30px; padding-right: 40px;">
+		
+				<table style="width:100%">
+				<h3>Torneios</h3>
+				<tr>
+					<th>Nome</th>
+					<th>Estado</th>
+				</tr>
+				<?php
+					require_once "connect.php";
+					mysqli_report(MYSQLI_REPORT_STRICT);// throw errors, not warnings
 				
+					$connection = new mysqli($host, $db_user, $db_password, $db_name);
+					if ($connection->connect_errno != 0){
+						throw new Exception(mysqli_connect_errno());
+					} else{
+						//echo "connected successfully";
+						$result = $connection->query("SELECT * FROM futebolamador.torneios;");
+					
+						while($row = mysqli_fetch_array($result)){
+							echo "<tr>";
+							echo "<td>" . $row['Nome_torneio'] . "</td>";
+							$query = sprintf("SELECT count(*) FROM futebolamador.equipas 
+											WHERE equipas.Nome_torneio = \"%s\";", $row['Nome_torneio']);
+						
+							$count = $connection->query($query);
+							$row2 = mysqli_fetch_array($count);
+						
+							if($row2[0] >= 2){
+								echo "<td style = \"color: rgb(0,200,0);\">Pronto a iniciar</td>";
+							}else{
+								echo "<td style = \"color: rgb(200,0,0);\">Não Pronto</td>";
+							}
+							echo "</tr>";
+						}
+						$connection->close();
+					}
+				?>
+				</table> 
 				
 			</div>
 		</div>
