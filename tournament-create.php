@@ -27,7 +27,7 @@
 
 	for ($i = 0; $i < 7; $i++){
 		array_push($disabled, "disabled");
-		array_push($weekday, "");
+		array_push($day, "");
 		array_push($start, "");
 		array_push($end, "");
 		array_push($field, "");
@@ -68,7 +68,7 @@
 			$checkboxErr = "Obrigatório selecionar pelo menos um dia.";
 			$error = true;
 		}
-		else{
+		else{ //if at least one day is selected
 			for ($i = 0; $i < 7; $i++){
 				if(!empty($_POST[$weekday[$i]])){
 					$day[$i] = test_input($_POST[$weekday[$i]]);
@@ -93,16 +93,34 @@
 			VALUES ('%s','%s','%s');", $tournamentname, $tournamentstart, $tournamentend);
 		if(!$error){
 			if ($connection->query($query) === TRUE) {
-				echo "New record created successfully";
+				echo "New tournament created successfully";
+				for ($i = 0; $i < 7; $i++){
+					if($day[$i] != ""){
+						$query = sprintf("INSERT INTO futebolamador.slot (`Nome_campo`,`Hora_inicio`,`Hora_fim`,`Dia_semana`)
+						VALUES ('%s','%s','%s','%s');", $field[$i], $start[$i], $end[$i], $weekday[$i]);
+						if ($connection->query($query) === TRUE) {
+							echo ".$i.";
+							echo "New slot created successfully";
+							$slot_id = mysqli_insert_id($connection);
+							$query = sprintf("INSERT INTO futebolamador.slot_torneios (`id_slot`, `Nome_torneio`) 
+							VALUES ('%s','%s');", $slot_id, $tournamentname);
+							if ($connection->query($query) === TRUE) {
+								echo "New slot_torneio created successfully";
+							}
+							else {
+								echo "Error: " . $query . "<br>" . $connection->error;
+							}
+						} else {
+							echo "Error: " . $query . "<br>" . $connection->error;
+						}
+					}
+				}
+				header('Location: tournament-management.php');
 				$connection->close();
 			} else {
 				echo "Error: " . $query . "<br>" . $connection->error;
 			}
 		}
-		
-		$query = sprintf("INSERT INTO futebolamador.slot (`Hora_inicio`,`Hora_fim`,`Dia_semana`)
-			VALUES ('%s','%s','%s');", $tournamentname, $tournamentstart, $tournamentend);
-		
 	}
 
 	function connectToDatabase(){

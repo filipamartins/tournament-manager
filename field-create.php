@@ -75,7 +75,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             
             if ($connection->query($query) === TRUE) {
                 echo "New record created successfully";
-                header('Location: field-management.php');
+				header('Location: field-management.php');
+				$connection->close();
             } else {
                 echo "Error: " . $query . "<br>" . $connection->error;
             }
@@ -84,9 +85,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $query = sprintf("UPDATE futebolamador.campos
                                 SET `GPS` = '%s', `Numero` = '%s', 
                                 WHERE futebolamador.campos.Nome_campo = '%s';",  , $campname);*/
-         
         }
-		$connection->close();
+		
 	}
 
 
