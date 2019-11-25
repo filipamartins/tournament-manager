@@ -75,11 +75,12 @@
 			<div class="9u" style="padding-top: 30px; padding-right: 40px;">
 		
 				<table style="width:100%">
-				<h3>Torneios</h3>
-				<tr>
-					<th>Nome</th>
-					<th>Estado</th>
-					<th>Ver info</th>
+				<h3>Gestão de Torneios</h3>
+				<tr style="background: #afd2f0;">
+					<th>Torneio</th>
+					<th> </th>
+					<th> </th>
+					<th> </th>
 				</tr>
 				<?php
 					require_once "connect.php";
@@ -95,8 +96,10 @@
 						while($row = mysqli_fetch_array($result)){
 							echo "<tr>";
 							echo "<td>" . $row['Nome_torneio'] . "</td>";
-							$query = sprintf("SELECT count(*) FROM futebolamador.equipas 
-											WHERE equipas.Nome_torneio = \"%s\";", $row['Nome_torneio']);
+							echo "<td><a href=\"tournament-detail.php?tname=".$row['Nome_torneio']."\" style=\"color:#5c3ab7;\">ver detalhes</a></td>";
+							
+							$query = sprintf("  SELECT count(*) FROM futebolamador.equipas 
+												WHERE equipas.Nome_torneio = \"%s\";", $row['Nome_torneio'] );
 						
 							$count = $connection->query($query);
 							$row2 = mysqli_fetch_array($count);
@@ -106,7 +109,7 @@
 							}else{
 								echo "<td style = \"color: rgb(200,0,0);\">Não Pronto</td>";
 							}
-							echo "<td><a href=\"tournament-detail.php?tname=".$row['Nome_torneio']."\" style=\"color:#5c3ab7;\">Detalhes</a></td>";
+							echo "<td><a href=\"tournament-detail.php?tname=".$row['Nome_torneio']."\" style=\"color:#5c3ab7;\">Gerir Torneio</a></td>";
 							echo "</tr>";
 						}
 						$connection->close();

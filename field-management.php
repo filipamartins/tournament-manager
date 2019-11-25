@@ -76,8 +76,8 @@
 				
 				<img src="images/camp3.jpg" onerror = "this.src= 'images/camp1.jpg';" style="max-width:100%;">
 				<h2>Campos de Futebol</h2>
-				<table style="width:100%">
-				<tr>
+				<table style="width:100%;">
+				<tr style="background: #afd2f0;">
 					<th>Nome</th>
 					<th>Rua</th>
 					<th>Numero</th>

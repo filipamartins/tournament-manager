@@ -4,8 +4,7 @@
 	templated.co @templatedco
 	Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
 -->
-<html lang="en">
-
+	<html lang="en">
 
     <?php
         require_once "connect.php";
@@ -34,7 +33,6 @@
             $connection->close();
         }
     ?>
-
 
 	<head>
 		<meta charset="UTF-8">
@@ -71,7 +69,6 @@
 					<li>
 						<div class="dropdown">
 						    <button class="dropbtn">
-								
 						      <img src="images/foto.jpg" onerror = "this.src= 'images/user.png';" style="width:auto;height:50px; border-radius:50%">
 						      <br><a>Inês Moreira</a>
 						    </button>
@@ -115,29 +112,27 @@
                         <?php echo $tournament['Data_fim'];?>
                     </div>
                 </div><br>
-
-                
+				
                 <?php
-
+					echo "<table style=\"width:auto; border:solid 1px;\">";
+					echo"<tr>";
+						echo"<th>Dia</th>";
+						echo"<th>Horário</th>";
+						echo"<th>Local</th>";
+						echo"<th>Custo Campo</th>";
+					echo"</tr>";
                     while($slot = mysqli_fetch_array($result_slots)){
-                        echo "<div class=\"row\">";
-                            echo "<div>";
-                                echo "DIA:" .$slot['Dia_semana']. " " .$slot['Hora_inicio']. " - " . $slot['Hora_fim']."<br>";
-                                echo "LOCAL:" .$slot['Nome_campo']. " - " . $slot['Cidade']. " " .$slot['Custo'] ;
-                            echo "</div>";
-                        echo "</div>";
-                    }
-        
+						echo"<tr>";
+							echo"<td>".$slot['Dia_semana']."</td>";
+							echo"<td>".$slot['Hora_inicio']." - ".$slot['Hora_fim']."</td>";
+							echo"<td>".$slot['Nome_campo']." - ".$slot['Cidade']."</td>";
+							echo"<td>".$slot['Custo']."</td>";
+						echo"</tr>";
+					}
+					echo "</table>"; 
                 ?>
-                <table style="width:100%">
-                <tr>
-                    <th>Dia</th>
-                    <th>Horário</th>
-                    <th>Local</th>
-                    <th>Custo Campo</th>
-				</tr>
-                 </table> 
-            
+             
+			</div>
 		</div>
 	</body>
 
