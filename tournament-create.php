@@ -170,7 +170,7 @@
 	<script src="js/skel.min.js"></script>
 	<script src="js/skel-layers.min.js"></script>
 	<script src="js/init.js"></script>
-	<script src="js/tournament-create.js"></script>
+	<script src="js/tournament.js"></script>
 	<noscript>
 		<!--	<link rel="stylesheet" href="css/skel.css" /> -->
 		<link rel="stylesheet" href="css/style.css" />

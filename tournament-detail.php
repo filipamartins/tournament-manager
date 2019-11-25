@@ -45,6 +45,7 @@
 		<script src="js/skel.min.js"></script>
 		<script src="js/skel-layers.min.js"></script>
 		<script src="js/init.js"></script>
+		<script src="js/tournament.js"></script>
 		<noscript>
 		 <!--	<link rel="stylesheet" href="css/skel.css" /> -->
 			<link rel="stylesheet" href="css/style.css"/>
@@ -104,17 +105,22 @@
                 <h2><?php echo $tournament['Nome_torneio'];?></h2>
                 <div class="row">
 					<div>
-                        <h4>Data de Inicio</h4>
-                        <?php echo $tournament['Data_inicio'];?>
+						<h5>Data de Inicio</h5>
+						<?php echo "<input type=date name=\"tournamentstart\" id = \"start\" disabled style=\"background: none;\" value=". $tournament['Data_inicio']."><br><br>";?>
                     </div>
                     <div>
-                        <h4>Data de Fim</h4>
-                        <?php echo $tournament['Data_fim'];?>
+                        <h5>Data de Fim</h5>
+						<?php echo "<input type=date name=\"tournamentend\" id = \"end\" disabled style=\"background: none;\" value=". $tournament['Data_fim']."><br><br>";?>
                     </div>
-                </div><br>
-				
+					<div>
+						<br>
+						<input type="submit" id = "submit" style="visibility:hidden;" value="Gravar"><br>
+					</div>
+				</div>
+				<input type="checkbox" name="change" value="true" id = "check" onclick="getSaveButton()">Alterar datas
+					
                 <?php
-					echo "<table style=\"width:auto; border:solid 1px;\">";
+					echo "<table style=\"width:auto;\">";
 					echo"<tr>";
 						echo"<th>Dia</th>";
 						echo"<th>Horário</th>";
@@ -122,6 +128,7 @@
 						echo"<th>Custo Campo</th>";
 					echo"</tr>";
                     while($slot = mysqli_fetch_array($result_slots)){
+						
 						echo"<tr>";
 							echo"<td>".$slot['Dia_semana']."</td>";
 							echo"<td>".$slot['Hora_inicio']." - ".$slot['Hora_fim']."</td>";
