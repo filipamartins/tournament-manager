@@ -19,10 +19,10 @@
 	$tournamentnameErr =  $tournamentstartErr = $tournamentendErr =  $checkboxErr = $timeErr = $fieldErr = "";
 	$tournamentname = $tournamentstart = $tournamentend = "";
 	$weekday = array("monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday");
+	$weekdayPT = array("Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado", "Domingo");
 	$disabled = array(); 
 	$day = array();
-	$start = array();
-	$end = array();
+	$start = $end = array();
 	$field = array();
 
 	for ($i = 0; $i < 7; $i++){
@@ -97,7 +97,7 @@
 				for ($i = 0; $i < 7; $i++){
 					if($day[$i] != ""){
 						$query = sprintf("INSERT INTO futebolamador.slot (`Nome_campo`,`Hora_inicio`,`Hora_fim`,`Dia_semana`)
-						VALUES ('%s','%s','%s','%s');", $field[$i], $start[$i], $end[$i], $weekday[$i]);
+						VALUES ('%s','%s','%s','%s');", $field[$i], $start[$i], $end[$i], $weekdayPT[$i]);
 						if ($connection->query($query) === TRUE) {
 							echo ".$i.";
 							echo "New slot created successfully";
@@ -150,7 +150,9 @@
 		$option = 1;
 		echo "<option value=\"\" selected hidden>Opção >></option>;";
 		while($row = mysqli_fetch_array($result)){
-			echo "<option value=\"".$row['Nome_campo']."\">Opção ".$option." &nbsp;&nbsp;&nbsp;>&nbsp; ".$row['Nome_campo']."</option>";
+			echo "  <option value=\"".$row['Nome_campo']."\">
+					Opção ".$option." &nbsp;&nbsp;&nbsp;>&nbsp; ".$row['Nome_campo']."
+					</option>";
 			$option++;
 		}
 	}

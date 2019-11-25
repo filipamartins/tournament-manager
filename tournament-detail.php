@@ -105,34 +105,39 @@
 			</div>
 			<div class="9u" style="padding-top: 30px; padding-right: 40px;">
                 <h2><?php echo $tournament['Nome_torneio'];?></h2>
-                <p>Data Inicio</p><br>
+                <div class="row">
+					<div>
+                        <h4>Data de Inicio</h4>
+                        <?php echo $tournament['Data_inicio'];?>
+                    </div>
+                    <div>
+                        <h4>Data de Fim</h4>
+                        <?php echo $tournament['Data_fim'];?>
+                    </div>
+                </div><br>
+
+                
                 <?php
-                    echo $tournament['Data_inicio'];
-                    echo $tournament['Data_fim'];
 
                     while($slot = mysqli_fetch_array($result_slots)){
-                        echo $slot['Dia_semana'];
-                        echo $slot['Hora_inicio'];
-                        echo $slot['Hora_fim'];
-                        echo $slot['Nome_campo'];
-                        echo $slot['Rua'];
-                        echo $slot['Numero'];
-                        echo $slot['Cidade'];
-                        echo $slot['GPS'];
-                        echo $slot['Custo'];
-                        
+                        echo "<div class=\"row\">";
+                            echo "<div>";
+                                echo "DIA:" .$slot['Dia_semana']. " " .$slot['Hora_inicio']. " - " . $slot['Hora_fim']."<br>";
+                                echo "LOCAL:" .$slot['Nome_campo']. " - " . $slot['Cidade']. " " .$slot['Custo'] ;
+                            echo "</div>";
+                        echo "</div>";
                     }
-				?>
-
-
+        
+                ?>
                 <table style="width:100%">
-				<tr>
-					<th>Nome</th>
+                <tr>
+                    <th>Dia</th>
+                    <th>Horário</th>
+                    <th>Local</th>
+                    <th>Custo Campo</th>
 				</tr>
-				
-				</table> 
-				
-			</div>
+                 </table> 
+            
 		</div>
 	</body>
 
