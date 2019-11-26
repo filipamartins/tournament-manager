@@ -7,6 +7,9 @@
 	<html lang="en">
 
     <?php
+		$tname = $_GET["tname"];
+
+
         require_once "connect.php";
         mysqli_report(MYSQLI_REPORT_STRICT);// throw errors, not warnings
 
@@ -17,28 +20,56 @@
             //echo "connected successfully";
             $query = sprintf(  "SELECT * 
                                 FROM futebolamador.torneios 
-                                WHERE torneios.Nome_torneio = \"%s\";", $_GET["tname"]  );
+                                WHERE torneios.Nome_torneio = \"%s\";", $tname  );
 
             $result_tournament = $connection->query($query);
             $tournament = mysqli_fetch_array($result_tournament);
 
-            $query = sprintf(  "SELECT * from futebolamador.slot 
-                                JOIN futebolamador.campos on slot.Nome_campo=campos.Nome_campo
-                                WHERE slot.id_slot IN ( SELECT slot_torneios.id_slot from futebolamador.slot_torneios 
-                                                        WHERE slot_torneios.Nome_torneio = \"%s\");", $_GET["tname"]  );
-
-            $result_slots = $connection->query($query);
 		   
 			$query = sprintf(  "SELECT * 
                                 FROM futebolamador.equipas 
-								WHERE equipas.Nome_torneio = \"%s\";", $_GET["tname"]  );
+								WHERE equipas.Nome_torneio = \"%s\";", $tname  );
 
 			
 			$result_teams = $connection->query($query);
 
 
             //$connection->close();
-        }
+		}
+		
+		if ($_SERVER["REQUEST_METHOD"] == "POST") {
+			$tournamentstart = test_input($_POST["tournamentstart"]);
+			$tournamentend = test_input($_POST["tournamentend"]);
+
+			$query = sprintf("  UPDATE futebolamador.torneios
+								SET torneios.Data_inicio = '%s', torneios.Data_fim = '%s'
+								WHERE torneios.Nome_torneio = '%s';", $tournamentstart, $tournamentend, $tname);
+			if ($connection->query($query) === TRUE) {
+				echo "Date updated successfully";
+			}
+			else {
+				echo "Error: " . $query . "<br>" . $connection->error;
+			}
+		}
+
+		function getSlots(){
+			global $connection;
+			global $tname;
+			$query = sprintf(  "SELECT * from futebolamador.slot 
+                                JOIN futebolamador.campos on slot.Nome_campo=campos.Nome_campo
+                                WHERE slot.id_slot IN ( SELECT slot_torneios.id_slot from futebolamador.slot_torneios 
+                                                        WHERE slot_torneios.Nome_torneio = \"%s\");", $tname  );
+
+			$result_slots = $connection->query($query);
+			return $result_slots;
+		}
+		
+		function test_input($data) {
+			$data = trim($data);
+			$data = stripslashes($data);
+			$data = htmlspecialchars($data);
+			return $data;
+		}
     ?>
 
 	<head>
@@ -109,43 +140,69 @@
 			</div>
 			<div class="9u" style="padding-top: 30px; padding-right: 40px;">
                 <h2><?php echo $tournament['Nome_torneio'];?></h2>
-                <div class="row">
-					<div>
-						<h5>Data de Inicio</h5>
-						<?php echo "<input type=date name=\"tournamentstart\" id = \"start\" disabled style=\"background: none;\" value=". $tournament['Data_inicio']."><br><br>";?>
-                    </div>
-                    <div>
-                        <h5>Data de Fim</h5>
-						<?php echo "<input type=date name=\"tournamentend\" id = \"end\" disabled style=\"background: none;\" value=". $tournament['Data_fim']."><br><br>";?>
-                    </div>
-					<div>
-						<br>
-						<input type="submit" id = "submit" style="visibility:hidden;" value="Gravar"><br>
+				<form action="tournament-detail.php?tname=<?php echo $tname?>" method="post">
+					<div class="row">
+						<div>
+							<h5>Data de Inicio</h5>
+							<input type=date name="tournamentstart" id ="start" disabled style="background: none;" value="<?php echo $tournament['Data_inicio']?>"><br><br>
+						</div>
+						<div>
+							<h5>Data de Fim</h5>
+							<input type=date name="tournamentend" id ="end" disabled style="background: none;" value="<?php echo $tournament['Data_fim']?>"><br><br>
+						</div>
+						<div>
+							<br>
+							<input type="submit" id ="submit" style="visibility:hidden;" value="Gravar">
+						</div>
 					</div>
-				</div>
-				<input type="checkbox" name="change" value="true" id = "check" onclick="getSaveButton()">Alterar datas
-					
+					<input type="checkbox" name="change" value="true" id ="check" onclick="getSaveButton()">Alterar datas
+					</form>
+				
+				<div class="row">
+					<div>
+						<h5>Dia</h5>	
+						<?php
+							$result_slots = getSlots();
+							while($slot = mysqli_fetch_array($result_slots)){
+								echo $slot['Dia_semana'];
+								echo "<br>";
+							}
+						?>
+					</div>
+					<div>
+						<h5>Horário</h5>
+						<?php
+							$result_slots = getSlots();
+							while($slot = mysqli_fetch_array($result_slots)){
+								echo $slot['Hora_inicio']." - ".$slot['Hora_fim'];
+								echo "<br>";
+							}
+						?>	
+					</div>
+					<div>
+						<h5>Local</h5>	
+						<?php
+							$result_slots = getSlots();
+							while($slot = mysqli_fetch_array($result_slots)){
+								echo $slot['Nome_campo']." - ".$slot['Cidade'];
+								echo "<br>";
+							}
+						?>
+					</div>
+					<div>
+						<h5>Custo campo</h5>	
+						<?php
+							$result_slots = getSlots();
+							while($slot = mysqli_fetch_array($result_slots)){
+								echo $slot['Custo'];
+								echo "<br>";
+							}
+						?>
+					</div>
+				</div><br>
                 <?php
-					echo "<table style=\"width:auto;\">";
-					echo"<tr style=\"background: #afd2f0;\">";
-						echo"<th>Dia</th>";
-						echo"<th>Horário</th>";
-						echo"<th>Local</th>";
-						echo"<th>Custo campo</th>";
-					echo"</tr>";
-                    while($slot = mysqli_fetch_array($result_slots)){
-						
-						echo"<tr>";
-							echo"<td>".$slot['Dia_semana']."</td>";
-							echo"<td>".$slot['Hora_inicio']." - ".$slot['Hora_fim']."</td>";
-							echo"<td>".$slot['Nome_campo']." - ".$slot['Cidade']."</td>";
-							echo"<td>".$slot['Custo']."</td>";
-						echo"</tr>";
-					}
-					echo "</table>"; 
-
 					if(mysqli_num_rows($result_teams) !=0){
-						echo "<table style=\"width:auto;\">";
+						echo "<table style=\"width:70%;\">";
 						echo"<tr style=\"background: #afd2f0;\">";
 						echo"<th>Equipas</th>";
 						echo"<th>Capitão</th>";
@@ -159,23 +216,35 @@
 
 							$query = sprintf(  "SELECT utilizadores.Primeiro_nome, utilizadores.Ultimo_nome
 												FROM futebolamador.utilizadores
-												WHERE utilizadores.CC = \"%s\";", $team['CC']  );
+												WHERE utilizadores.CC = '%s';", $team['CC']  );
 							
 							$result_captain = $connection->query($query);
 							$captain = mysqli_fetch_array($result_captain);
 
 							echo"<td>".$captain[0]." ".$captain[1]."</td>";
 							if($team['Estado'] == 1){
-								echo"<td>Completa</td>";
+								echo"<td style = \"color: rgb(0,200,0);\">Completa</td>";
 							}else{
 								echo"<td>Incompleta</td>";
 							}
 							echo"</tr>";
 						}
 						echo "</table>"; 
-				}
+					}
                 ?>
-             
+				<div class="row">
+					<div>
+						<h5>Nº de jogos entre pares de equipas:</h5>
+						<input type="number" id="games" name="games" min="1" max="2" style="background: none;"><br><br>
+					</div>
+					<div>
+					</div>
+					<div>
+						<div style="text-align:right">
+						<input type="submit" id = "submit" value="Gerar Jogos"><br><br>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</body>
