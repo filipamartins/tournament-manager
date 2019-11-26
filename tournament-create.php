@@ -196,9 +196,8 @@
 				<li>
 					<div class="dropdown">
 						<button class="dropbtn">
-							<img src="images/foto.jpg" onerror="this.src= 'images/user.png';"
-								style="width:auto;height:50px; border-radius:50%">
-							<br><a>Inês Moreira</a>
+							<img src="images/user.png" onerror = "this.src= 'images/foto.jpg';" style="width:auto;height:50px; border-radius:50%">
+						    <br><a>Filipa Martins</a>
 						</button>
 						<div class="dropdown-content">
 							<a href="#">Ver perfil</a>

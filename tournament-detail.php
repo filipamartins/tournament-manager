@@ -28,9 +28,16 @@
                                                         WHERE slot_torneios.Nome_torneio = \"%s\");", $_GET["tname"]  );
 
             $result_slots = $connection->query($query);
-           
+		   
+			$query = sprintf(  "SELECT * 
+                                FROM futebolamador.equipas 
+								WHERE equipas.Nome_torneio = \"%s\";", $_GET["tname"]  );
 
-            $connection->close();
+			
+			$result_teams = $connection->query($query);
+
+
+            //$connection->close();
         }
     ?>
 
@@ -70,8 +77,8 @@
 					<li>
 						<div class="dropdown">
 						    <button class="dropbtn">
-						      <img src="images/foto.jpg" onerror = "this.src= 'images/user.png';" style="width:auto;height:50px; border-radius:50%">
-						      <br><a>Inês Moreira</a>
+						      <img src="images/user.png" onerror = "this.src= 'images/foto.jpg';" style="width:auto;height:50px; border-radius:50%">
+						      <br><a>Filipa Martins</a>
 						    </button>
 						    <div class="dropdown-content">
 						      <a href="#">Ver perfil</a>
@@ -80,7 +87,6 @@
 						    </div>
 						</div>
 					</li>
-					
 					<!-- <li><a href="help.html">Ajuda</a></li>-->
 				</ul>
 				
@@ -121,11 +127,11 @@
 					
                 <?php
 					echo "<table style=\"width:auto;\">";
-					echo"<tr>";
+					echo"<tr style=\"background: #afd2f0;\">";
 						echo"<th>Dia</th>";
 						echo"<th>Horário</th>";
 						echo"<th>Local</th>";
-						echo"<th>Custo Campo</th>";
+						echo"<th>Custo campo</th>";
 					echo"</tr>";
                     while($slot = mysqli_fetch_array($result_slots)){
 						
@@ -137,6 +143,37 @@
 						echo"</tr>";
 					}
 					echo "</table>"; 
+
+					if(mysqli_num_rows($result_teams) !=0){
+						echo "<table style=\"width:auto;\">";
+						echo"<tr style=\"background: #afd2f0;\">";
+						echo"<th>Equipas</th>";
+						echo"<th>Capitão</th>";
+						echo"<th>Estado</th>";
+						echo"</tr>";
+						
+						while($team = mysqli_fetch_array($result_teams)){
+							
+							echo"<tr>";
+							echo"<td>".$team['Nome_equipa']."</td>";
+
+							$query = sprintf(  "SELECT utilizadores.Primeiro_nome, utilizadores.Ultimo_nome
+												FROM futebolamador.utilizadores
+												WHERE utilizadores.CC = \"%s\";", $team['CC']  );
+							
+							$result_captain = $connection->query($query);
+							$captain = mysqli_fetch_array($result_captain);
+
+							echo"<td>".$captain[0]." ".$captain[1]."</td>";
+							if($team['Estado'] == 1){
+								echo"<td>Completa</td>";
+							}else{
+								echo"<td>Incompleta</td>";
+							}
+							echo"</tr>";
+						}
+						echo "</table>"; 
+				}
                 ?>
              
 			</div>
