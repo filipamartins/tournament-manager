@@ -99,7 +99,6 @@
 						$query = sprintf("INSERT INTO futebolamador.slot (`Nome_campo`,`Hora_inicio`,`Hora_fim`,`Dia_semana`)
 						VALUES ('%s','%s','%s','%s');", $field[$i], $start[$i], $end[$i], $weekdayPT[$i]);
 						if ($connection->query($query) === TRUE) {
-							echo ".$i.";
 							echo "New slot created successfully";
 							$slot_id = mysqli_insert_id($connection);
 							$query = sprintf("INSERT INTO futebolamador.slot_torneios (`id_slot`, `Nome_torneio`) 

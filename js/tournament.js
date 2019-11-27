@@ -17,7 +17,7 @@ function getTime(n) {
 
 function getSaveButton() {
 	var checkBox = document.getElementById("check");
-	var submit = document.getElementById("submit1");
+	var submit = document.getElementById("submit");
 	var start = document.getElementById("start");
 	var end = document.getElementById("end");
 	if (checkBox.checked == true) {

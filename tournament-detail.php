@@ -30,7 +30,7 @@
 		}
 		
 		if ($_SERVER["REQUEST_METHOD"] == "POST") {
-			if(isset($_POST["submit1"])) { 
+			if(isset($_POST["submit_data"])) { 
 				$tournamentstart = test_input($_POST["tournamentstart"]);
 				$tournamentend = test_input($_POST["tournamentend"]);
 
@@ -43,6 +43,27 @@
 				else {
 					echo "Error: " . $query . "<br>" . $connection->error;
 				}
+			}
+			else if(isset($_POST["submit_manager"])) { 
+				$captainCC =  test_input($_POST["captains"]);
+
+				$query = sprintf("  INSERT INTO futebolamador.gestores_torneio (`CC`)
+									VALUES ('%s');", $captainCC );
+
+				if ($connection->query($query) === TRUE) {
+					$query = sprintf("  INSERT INTO futebolamador.gestores_torneio_torneios (`CC`, `Nome_torneio`) 
+										VALUES ('%s', '%s');", $captainCC, $tname);
+
+					if ($connection->query($query) === TRUE) {
+						echo "Manager updated successfully";
+					}
+					else {
+						echo "Error: " . $query . "<br>" . $connection->error;
+					}	
+				}else {
+					echo "Error: " . $query . "<br>" . $connection->error;
+				}					
+				
 			}
 		}
 
@@ -189,7 +210,7 @@
 						</div>
 						<div>
 							<br>
-							<input type="submit" name="submit1" id ="submit1" style="visibility:hidden;" value="Gravar">
+							<input type="submit" name="submit_date" id ="submit" style="visibility:hidden;" value="Gravar">
 						</div>
 					</div>
 					<input type="checkbox" name="change" value="true" id ="check" onclick="getSaveButton()">Alterar datas
@@ -243,7 +264,7 @@
 						<?php 
 							$managers = getManagers($tname);
 							while($manager = mysqli_fetch_array($managers)){
-								echo $manager['Primeiro_nome']." ".$manager["Ultimo_nome"];	
+								echo $manager['Primeiro_nome']." ".$manager["Ultimo_nome"]."<br>";	
 							}
 						?>
 					</div>
@@ -251,10 +272,10 @@
 				$teams = getTeams($tname);
 				if(mysqli_num_rows($teams) !=0){	
 					echo "<div>";
-					echo "<form action=\"tournament-detail.php?tname=<?php echo $tname?>\" method=\"post\">";
-						echo "Promover capitão a gestor:<br>";
-						echo "<select name=\"captains\" id=\"captains\">";
-							echo "<option value=\"\" selected hidden>Selecionar capitão >></option>;";
+					echo "<form action=\"tournament-detail.php?tname=".$tname."\" method=\"post\">";
+					
+						echo "<br><select name=\"captains\">";
+							echo "<option value=\"\" selected hidden>Promover capitão a gestor >></option>;";
 							
 							while($team = mysqli_fetch_array($teams)){
 								$captain = getTeamCaptain($team);
@@ -264,25 +285,25 @@
 							}
 								
 						echo "</select>";
-						echo "</div>";
-						echo "<div>";
-							echo "<br><input type=\"submit\" id =\"submit2\"  value=\"Gravar\">";
-						
+					echo "</div>";
+					echo "<div>";
+						echo "<br><input type=\"submit\" name =\"submit_manager\" value=\"Gravar\">";
+					echo "</div>";
 						
 					echo "</form>";
-					echo "</div>";
 				}
 				?>
 				</div>
-				<br>
+			
                 <?php
 					$teams = getTeams($tname);
 					if(mysqli_num_rows($teams) !=0){
 						
-						echo "<table style=\"width:auto;\">";
+						echo "<table style=\"width:68%;\">";
 						echo"<tr style=\"background: #afd2f0;\">";
 						echo"<th>Equipas</th>";
 						echo"<th>Capitão</th>";
+						echo"<th></th>";
 						echo"<th></th>";
 						echo"<th>Estado</th>";
 						echo"</tr>";
@@ -299,18 +320,21 @@
 							
 							$team_players = getTeamPlayers($team['Nome_equipa']);
 						
-							echo "<td><select name=\"players\" id=\"players\">";
+							echo "<td><select name=\"players\">";
 							
 							//$option = 1;
-							echo "<option value=\"\" selected hidden>Capitão >></option>;";
+							echo "<form action=\"tournament-detail.php?tname=".$tname."\" method=\"post\">";
+							echo "<option value=\"\" selected hidden>Alterar capitão >></option>;";
 							while($player = mysqli_fetch_array($team_players)){
 								echo "<option value=\"".$player['CC']."\">"
 										.$player['Primeiro_nome']." ".$player['Ultimo_nome'].
-										"</option>";
+									"</option>";
 								
 							}
 							echo"</select></td>";
-						
+
+							echo"<td><input type=\"submit\" name =\"submit_captain\" value=\"Gravar\"></td>";
+							echo "</form>";
 							if($team['Estado'] == 1){
 								echo"<td style = \"color: rgb(0,200,0);\">Completa</td>";
 							}else{
