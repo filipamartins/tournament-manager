@@ -76,7 +76,8 @@
 				<img src="images/tournament4.jpg" onerror = "this.src= 'images/tournament11.jpg';" style="max-width:100%;">
 				<h2>Torneios</h2>
 				<p>Bem-vindo à secção de gestão de Torneios.</p>
-				
+				<p>(<--- Selecione na barra lateral a opção pretendida.)</p>
+				<br><br><br>
 			</div>
 		</div>
 	</body>

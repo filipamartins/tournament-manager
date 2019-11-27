@@ -73,13 +73,13 @@
 				</section>
 			</div>
 			<div class="9u" style="padding-top: 30px; padding-right: 40px;">
-		
+				<img src="images/tournament4.jpg" onerror = "this.src= 'images/tournament11.jpg';" style="max-width:100%;">
 				<table style="width:100%">
-				<h3>Gestão de Torneios</h3>
+				<h2>Gestão de Torneios</h2>
 				<tr style="background: #afd2f0;">
 					<th>Torneio</th>
 					<th> </th>
-					<th> </th>
+					
 					<th> </th>
 				</tr>
 				<?php
@@ -96,7 +96,7 @@
 						while($row = mysqli_fetch_array($result)){
 							echo "<tr>";
 							echo "<td>" . $row['Nome_torneio'] . "</td>";
-							echo "<td><a href=\"tournament-detail.php?tname=".$row['Nome_torneio']."\" style=\"color:#5c3ab7;\">ver detalhes</a></td>";
+							
 							
 							$query = sprintf("  SELECT count(*) FROM futebolamador.equipas 
 												WHERE equipas.Nome_torneio = \"%s\";", $row['Nome_torneio'] );
