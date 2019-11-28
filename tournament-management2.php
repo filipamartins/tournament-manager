@@ -37,7 +37,8 @@
 				$query = sprintf("  UPDATE futebolamador.torneios
 									SET torneios.Data_inicio = '%s', torneios.Data_fim = '%s'
 									WHERE torneios.Nome_torneio = '%s';", $tournamentstart, $tournamentend, $tname);
-				if ($connection->query($query) === TRUE) {
+                
+                if ($connection->query($query) === TRUE) {
 					echo "Date updated successfully";
 				}
 				else {
@@ -149,6 +150,41 @@
 			return $captain;
 		}
 
+        function getNumberGames($tname){
+            global $connection;
+            $query = sprintf("  SELECT count(*) FROM futebolamador.jogos 
+                                WHERE jogos.Nome_torneio = \"%s\";", $tname );
+    
+            $result = $connection->query($query);
+            $number_games = mysqli_fetch_array($result);
+            return $number_games;
+        }
+
+        function getTournamentState($tname){
+            global $connection;
+            $ready = false;
+    
+            $query = sprintf("  SELECT count(*), equipas.estado FROM futebolamador.equipas 
+                                WHERE equipas.Nome_torneio = \"%s\"
+                                GROUP BY equipas.estado;", $tname );
+    
+            $result = $connection->query($query);
+            while($row = mysqli_fetch_array($result)){
+                if($row[0] >= 2 and $row[1] == 1)
+                    $ready = true;
+            }
+            $number_games = getNumberGames($tname);
+            if($ready and $number_games[0] != 0 ){
+                return 2; //A decorrer
+            }
+            else if($ready){
+                return 1; //Pronto a iniciar
+            }
+            else{
+                return 0; //Não pronto
+            }
+        }
+        
 		function test_input($data) {
 			$data = trim($data);
 			$data = stripslashes($data);
@@ -285,7 +321,7 @@
 					$teams = getTeams($tname);
 					if(mysqli_num_rows($teams) !=0){
 						
-						echo "<table style=\"width:64%\">";
+						echo "<table style=\"width:65%\">";
 						echo"<tr style=\"background: #afd2f0;\">";
 						echo"<th>Equipas</th>";
 						echo"<th>Capitão</th>";
@@ -330,22 +366,26 @@
 						echo "</table>";
 					}
                 ?>
-				
-				<form action="tournament-management2.php?tname=<?php echo $tname?>" method="post">
-				<div class="row">
-					<div>
-						<h5>Nº de jogos entre pares de equipas:</h5>
-						<input type="number" id="games" name="games" min="1" max="2" style="background: none;"><br><br>
-					</div>
-					<div>
-					</div>
-					<div>
-						<div style="text-align:right">
-						<input type="submit" id = "submit3" value="Gerar Jogos"><br><br>
-						</div>
-					</div>
-				</div>
-				</form>
+                <?php
+                    $state = getTournamentState($tname);
+                    if($state == 1){
+                        echo "<form action=\"tournament-management2.php?tname=\"". $tname."\" method=\"post\">";
+                        echo "<div class=\"row\">";
+                            echo "<div>";
+                                echo "<h5>Nº de jogos entre pares de equipas:</h5>";
+                                echo "<input type=\"number\" id=\"games\" name=\"games\" min=\"1\" max=\"2\" style=\"background: none;\"><br><br>";
+                            echo "</div>";
+                            echo "<div>";
+                            echo "</div>";
+                            echo "<div>";
+                                echo "<div style=\"text-align:right\">";
+                                echo "<input type=\"submit\" name=\"submit_games\" value=\"Gerar Jogos\"><br><br>";
+                                echo "</div>";
+                            echo "</div>";
+                        echo "</div>";
+                        echo "</form>";
+                    }
+                ?>
 			</div>
 		</div>
 	</body>

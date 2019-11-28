@@ -5,6 +5,57 @@
 	Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
 -->
 <html lang="en">
+
+<?php
+
+	require_once "connect.php";
+	mysqli_report(MYSQLI_REPORT_STRICT);// throw errors, not warnings
+
+	$connection = new mysqli($host, $db_user, $db_password, $db_name);
+	if ($connection->connect_errno != 0){
+		throw new Exception(mysqli_connect_errno());
+	} else{
+		$tournaments = $connection->query("SELECT * FROM futebolamador.torneios;");
+		//echo "connected successfully";
+	}
+
+	function getNumberGames($tname){
+		global $connection;
+		$query = sprintf("  SELECT count(*) FROM futebolamador.jogos 
+							WHERE jogos.Nome_torneio = \"%s\";", $tname );
+
+		$result = $connection->query($query);
+		$number_games = mysqli_fetch_array($result);
+		return $number_games;
+	}
+
+	function getTournamentState($tname){
+		global $connection;
+		$ready = false;
+
+		$query = sprintf("  SELECT count(*), equipas.estado FROM futebolamador.equipas 
+							WHERE equipas.Nome_torneio = \"%s\"
+							GROUP BY equipas.estado;", $tname );
+
+		$result = $connection->query($query);
+		
+		while($row = mysqli_fetch_array($result)){
+			if($row[0] >= 2 and $row[1] == 1)
+				$ready = true;
+		}
+		$number_games = getNumberGames($tname);
+		if($ready and $number_games[0] != 0 ){
+			return 2; //A decorrer
+		}
+		else if($ready){
+			return 1; //Pronto a iniciar
+		}
+		else{
+			return 0; //Não pronto
+		}
+	}
+
+?>
 	<head>
 		<meta charset="UTF-8">
 		<title>Futebol Amador</title>
@@ -82,60 +133,32 @@
 					<th></th>			
 				</tr>
 				<?php
-					require_once "connect.php";
-					mysqli_report(MYSQLI_REPORT_STRICT);// throw errors, not warnings
-				
-					$connection = new mysqli($host, $db_user, $db_password, $db_name);
-					if ($connection->connect_errno != 0){
-						throw new Exception(mysqli_connect_errno());
-					} else{
-						//echo "connected successfully";
-						$result = $connection->query("SELECT * FROM futebolamador.torneios;");
+		
+					while($tournament = mysqli_fetch_array($tournaments)){
+						echo "<tr>";
+						echo "<td>" . $tournament['Nome_torneio'] . "</td>";
+
+						$query = sprintf("  SELECT count(*) FROM futebolamador.equipas 
+											WHERE equipas.Nome_torneio = \"%s\";", $tournament['Nome_torneio'] );
+
+						$result2 = $connection->query($query);
+						$count = mysqli_fetch_array($result2);
+						echo "<td>" . $count[0] . "</td>";
 					
-						while($row = mysqli_fetch_array($result)){
-							echo "<tr>";
-							echo "<td>" . $row['Nome_torneio'] . "</td>";
-
-							$query = sprintf("  SELECT count(*), equipas.estado FROM futebolamador.equipas 
-												WHERE equipas.Nome_torneio = \"%s\"
-												GROUP BY equipas.estado;", $row['Nome_torneio'] );
-	
-							$result2 = $connection->query($query);
-							
-							$ready = false;
-							$count = 0;
-							while($row2 = mysqli_fetch_array($result2)){
-								$count += $row2[0];
-								if($row2[0] >= 2 and $row2[1] == 1){
-									$ready = true;
-								}
-							}
-							echo "<td>" . $count . "</td>";
-
-							$query = sprintf("  SELECT count(*) FROM futebolamador.jogos 
-												WHERE jogos.Nome_torneio = \"%s\";", $row['Nome_torneio'] );
-
-							$result3 = $connection->query($query);
-							$row3 = mysqli_fetch_array($result3);
-							if($ready and $row3[0] != 0 ){
-								echo "<td style = \"color: rgb(250,150,0);\">A decorrer</td>";
-							}
-							else if($ready){
-								echo "<td style = \"color: rgb(0,200,0);\">Pronto a iniciar</td>";
-							}else{
-								echo "<td>Não Pronto</td>";
-							}
-
-
-
-
-							echo "<td><a href=\"tournament-detail.php?tname=".$row['Nome_torneio']."\" style=\"color:#5c3ab7;\">ver detalhes</a></td>";
-							
-							
-							echo "</tr>";
+						$state = getTournamentState($tournament['Nome_torneio']);
+						if($state == 2){
+							echo "<td style = \"color: rgb(250,150,0);\">A decorrer</td>";
 						}
-						$connection->close();
+						else if($state == 1){
+							echo "<td style = \"color: rgb(0,200,0);\">Pronto a iniciar</td>";
+						}else{
+							echo "<td>Não Pronto</td>";
+						}
+
+						echo "<td><a href=\"tournament-detail.php?tname=".$tournament['Nome_torneio']."\" style=\"color:#5c3ab7;\">ver detalhes</a></td>";
+						echo "</tr>";
 					}
+					$connection->close();
 				?>
 				</table> 
 				

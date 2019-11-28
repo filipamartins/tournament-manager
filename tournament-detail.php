@@ -185,7 +185,6 @@
 					</div>
 				</div><br>
 
-			
                 <?php
 					$teams = getTeams($tname);
 					if(mysqli_num_rows($teams) !=0){
