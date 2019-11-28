@@ -112,7 +112,7 @@
 							if(!$ready){
 								echo "<td style = \"color: rgb(200,0,0);\">Não Pronto</td>";
 							}
-							echo "<td><a href=\"tournament-detail.php?tname=".$row['Nome_torneio']."\" style=\"color:#5c3ab7;\">Gerir Torneio</a></td>";
+							echo "<td><a href=\"tournament-management2.php?tname=".$row['Nome_torneio']."\" style=\"color:#5c3ab7;\">Gerir Torneio</a></td>";
 							echo "</tr>";
 						}
 						$connection->close();

@@ -9,7 +9,6 @@
     <?php
 		$tname = $_GET["tname"];
 
-
         require_once "connect.php";
         mysqli_report(MYSQLI_REPORT_STRICT);// throw errors, not warnings
 
@@ -28,77 +27,6 @@
 			$tournamentend = $tournament['Data_fim'];
             //$connection->close();
 		}
-		
-		if ($_SERVER["REQUEST_METHOD"] == "POST") {
-			if(isset($_POST["submit_data"])) { 
-				$tournamentstart = test_input($_POST["tournamentstart"]);
-				$tournamentend = test_input($_POST["tournamentend"]);
-
-				$query = sprintf("  UPDATE futebolamador.torneios
-									SET torneios.Data_inicio = '%s', torneios.Data_fim = '%s'
-									WHERE torneios.Nome_torneio = '%s';", $tournamentstart, $tournamentend, $tname);
-				if ($connection->query($query) === TRUE) {
-					echo "Date updated successfully";
-				}
-				else {
-					echo "Error: " . $query . "<br>" . $connection->error;
-				}
-			}
-			else if(isset($_POST["submit_manager"])) { 
-				$captainCC =  test_input($_POST["captains"]);
-				if($captainCC != ""){
-
-					$query = sprintf("  INSERT INTO futebolamador.gestores_torneio (`CC`)
-										VALUES ('%s');", $captainCC );
-
-					if ($connection->query($query) === TRUE) {
-						$query = sprintf("  INSERT INTO futebolamador.gestores_torneio_torneios (`CC`, `Nome_torneio`) 
-											VALUES ('%s', '%s');", $captainCC, $tname);
-
-						if ($connection->query($query) === TRUE) {
-							echo "Manager updated successfully";
-						}
-						else {
-							echo "Error: " . $query . "<br>" . $connection->error;
-						}	
-					}else {
-						echo "Error: " . $query . "<br>" . $connection->error;
-					}					
-				}
-			}
-			else if(isset($_POST["submit_captain"])) { 
-				$playerCC =  test_input($_POST["players"]);
-				$teamName = test_input($_POST["team"]);
-				if($playerCC != ""){
-					$captainCC = getTeamCaptain($teamName);
-					
-					$query = sprintf("DELETE FROM futebolamador.capitaes WHERE capitaes.CC = '%s';", $captainCC[0]);
-
-					if ($connection->query($query) === TRUE) {
-						$query = sprintf("INSERT INTO futebolamador.capitaes (`CC`) VALUES ('%s');", $playerCC);
-						
-						if ($connection->query($query) === TRUE) {
-							$query = sprintf("  UPDATE futebolamador.equipas
-												SET equipas.CC = '%s'
-												WHERE equipas.Nome_equipa = '%s';", $playerCC, $teamName);
-							
-							if ($connection->query($query) === TRUE) {
-								echo "Captain updated successfully";
-							}
-							else {
-								echo "Error: " . $query . "<br>" . $connection->error;
-							}	
-						}
-						else {
-							echo "Error: " . $query . "<br>" . $connection->error;
-						}
-					}
-					else {
-						echo "Error: " . $query . "<br>" . $connection->error;
-					}	
-				}
-			}
-		}
 
 
 		function getSlots($tname){
@@ -112,16 +40,6 @@
 			return $slots;
 		}
 
-		function getManagers($tname){
-			global $connection;
-			$query = sprintf(  "SELECT utilizadores.Primeiro_nome, utilizadores.Ultimo_nome FROM futebolamador.utilizadores 
-								WHERE utilizadores.CC IN (  SELECT gestores_torneio_torneios.CC FROM futebolamador.gestores_torneio_torneios 
-															WHERE gestores_torneio_torneios.Nome_torneio = \"%s\");", $tname  );
-	
-			$managers = $connection->query($query);
-			return $managers;
-		}
-
 		function getTeams($tname){
 			global $connection;
 			$query = sprintf(  "SELECT * FROM futebolamador.equipas 
@@ -129,25 +47,6 @@
 
 			$teams = $connection->query($query);
 			return $teams;
-		}
-
-		function getTeamPlayers($teamName){
-			global $connection;
-			$query = sprintf(  "SELECT utilizadores.CC, utilizadores.Primeiro_nome, utilizadores.Ultimo_nome 
-								FROM futebolamador.utilizadores 
-								WHERE utilizadores.CC IN (  SELECT equipas_jogadores.CC 
-															FROM futebolamador.equipas_jogadores 
-															WHERE equipas_jogadores.Nome_equipa = '%s');", $teamName);
-			$team_players = $connection->query($query);
-			return $team_players;
-		}
-
-		function getTeamCaptain($teamName){
-			global $connection;
-			$query = sprintf("SELECT equipas.CC FROM futebolamador.equipas WHERE equipas.Nome_equipa = \"%s\";", $teamName);
-			$result_captainCC = $connection->query($query);
-			$captainCC = mysqli_fetch_array($result_captainCC);
-			return $captainCC;
 		}
 
 		function getTeamCaptainInfo($team){
@@ -161,12 +60,6 @@
 			return $captain;
 		}
 
-		function test_input($data) {
-			$data = trim($data);
-			$data = stripslashes($data);
-			$data = htmlspecialchars($data);
-			return $data;
-		}
     ?>
 
 	<head>
@@ -236,24 +129,18 @@
 				</section>
 			</div>
 			<div class="9u" style="padding-top: 30px; padding-right: 40px;">
-                <h2><?php echo $tournament['Nome_torneio'];?></h2>
-				<form action="tournament-detail.php?tname=<?php echo $tname?>" method="post">
-					<div class="row">
-						<div>
-							<h5>Data de Inicio</h5>
-							<input type=date name="tournamentstart" id ="start" disabled style="background: none;" value="<?php echo $tournamentstart?>"><br><br>
-						</div>
-						<div>
-							<h5>Data de Fim</h5>
-							<input type=date name="tournamentend" id ="end" disabled style="background: none;" value="<?php echo $tournamentend?>"><br><br>
-						</div>
-						<div>
-							<br>
-							<input type="submit" name="submit_date" id ="submit" style="visibility:hidden;" value="Gravar">
-						</div>
+                <h2><?php echo $tournament['Nome_torneio'];?></h2><br>
+				
+				<div class="row">
+					<div>
+						<h5>Data de Inicio</h5>
+						<input type=date name="tournamentstart" id ="start" disabled style="background: none;" value="<?php echo $tournamentstart?>"><br><br>
 					</div>
-					<input type="checkbox" name="change" value="true" id ="check" onclick="getSaveButton()">Alterar datas
-					</form>
+					<div>
+						<h5>Data de Fim</h5>
+						<input type=date name="tournamentend" id ="end" disabled style="background: none;" value="<?php echo $tournamentend?>"><br><br>
+					</div>
+				</div><br>
 				
 				<div class="row">
 					<div>
@@ -297,81 +184,26 @@
 						?>
 					</div>
 				</div><br>
-				<div class="row">
-					<div>
-						<h5>Gestores de Torneio</h5>
-						<?php 
-							$managers = getManagers($tname);
-							while($manager = mysqli_fetch_array($managers)){
-								echo $manager['Primeiro_nome']." ".$manager["Ultimo_nome"]."<br>";	
-							}
-						?>
-					</div>
-				<?php 
-				$teams = getTeams($tname);
-				if(mysqli_num_rows($teams) !=0){	
-					echo "<div>";
-					echo "<form action=\"tournament-detail.php?tname=".$tname."\" method=\"post\">";
-					
-						echo "<br><select name=\"captains\">";
-							echo "<option value=\"\" selected hidden>Promover capitão a gestor >></option>;";
-							
-							while($team = mysqli_fetch_array($teams)){
-								$captain = getTeamCaptainInfo($team);
-								echo "<option value=\"".$captain['CC']."\">"
-										.$captain['Primeiro_nome']." ".$captain['Ultimo_nome']." - ".$team['Nome_equipa'].
-									"</option>";
-							}
-								
-						echo "</select>";
-					echo "</div>";
-					echo "<div>";
-						echo "<br><input type=\"submit\" name =\"submit_manager\" value=\"Gravar\">";
-					echo "</div>";
-						
-					echo "</form>";
-				}
-				?>
-				</div>
+
 			
                 <?php
 					$teams = getTeams($tname);
 					if(mysqli_num_rows($teams) !=0){
 						
-						echo "<table style=\"width:68%;\">";
+						echo "<table style=\"width:74%;\">";
 						echo"<tr style=\"background: #afd2f0;\">";
 						echo"<th>Equipas</th>";
 						echo"<th>Capitão</th>";
-						echo"<th></th>";
-						echo"<th></th>";
 						echo"<th>Estado</th>";
 						echo"</tr>";
 						
 						while($team = mysqli_fetch_array($teams)){
-							echo "<form action=\"tournament-detail.php?tname=".$tname."\" method=\"post\">";
+							
 							echo"<tr>";
 							echo"<td>".$team['Nome_equipa']."</td>";
 
-							
 							$captain = getTeamCaptainInfo($team);
-
 							echo"<td>".$captain[1]." ".$captain[2]."</td>";
-							
-							$team_players = getTeamPlayers($team['Nome_equipa']);
-						
-							echo "<td><select name=\"players\">";
-							
-							//$option = 1;
-							
-							echo "<option value=\"\" selected hidden>Alterar capitão >></option>;";
-							while($player = mysqli_fetch_array($team_players)){
-								echo "<option value=\"".$player['CC']."\">"
-										.$player['Primeiro_nome']." ".$player['Ultimo_nome'].
-									"</option>";
-							}
-							echo"</select></td>";
-							echo"<input type=\"hidden\" name=\"team\" id=\"hiddenField\" value=\"".$team['Nome_equipa']."\" />";
-							echo"<td><input type=\"submit\" name =\"submit_captain\" value=\"Gravar\"></td>";
 							
 							if($team['Estado'] == 1){
 								echo"<td style = \"color: rgb(0,200,0);\">Completa</td>";
@@ -379,27 +211,11 @@
 								echo"<td>Incompleta</td>";
 							}
 							echo"</tr>";
-							echo "</form>";
 						}
-						echo "</table>";
+						echo "</table><br>";
 					}
                 ?>
 				
-				<form action="tournament-detail.php?tname=<?php echo $tname?>" method="post">
-				<div class="row">
-					<div>
-						<h5>Nº de jogos entre pares de equipas:</h5>
-						<input type="number" id="games" name="games" min="1" max="2" style="background: none;"><br><br>
-					</div>
-					<div>
-					</div>
-					<div>
-						<div style="text-align:right">
-						<input type="submit" id = "submit3" value="Gerar Jogos"><br><br>
-						</div>
-					</div>
-				</div>
-				</form>
 			</div>
 		</div>
 	</body>
