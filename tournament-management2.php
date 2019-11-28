@@ -6,9 +6,15 @@
 -->
 	<html lang="en">
 
-    <?php
-		$tname = $_GET["tname"];
+    <style>
+	    .error {
+		    color: #FF0000;
+	    }
+    </style>
 
+    <?php
+        $tname = $_GET["tname"];
+        $tournamentGamesErr = "";
 
         require_once "connect.php";
         mysqli_report(MYSQLI_REPORT_STRICT);// throw errors, not warnings
@@ -25,7 +31,7 @@
             $result_tournament = $connection->query($query);
 			$tournament = mysqli_fetch_array($result_tournament);
 			$tournamentstart = $tournament['Data_inicio'];
-			$tournamentend = $tournament['Data_fim'];
+            $tournamentend = $tournament['Data_fim'];
             //$connection->close();
 		}
 		
@@ -98,7 +104,23 @@
 						echo "Error: " . $query . "<br>" . $connection->error;
 					}	
 				}
-			}
+            }
+            else if(isset($_POST["submit_games"])) {
+                $games = test_input($_POST["games"]);
+
+                if (empty($_POST["games"])) {
+                    $tournamentGamesErr = "Obrigatório indicar número de jogos.";
+                    $error = true;
+                }
+                if(!$error){
+                    $query = sprintf("  UPDATE futebolamador.torneios
+                                        SET torneios.Numero_confrontos = '%s'
+                                        WHERE torneios.Nome_torneio = '%s';", $games, $tname);
+                }
+            
+            
+            
+            } 
 		}
 
 		function getManagers($tname){
@@ -369,11 +391,12 @@
                 <?php
                     $state = getTournamentState($tname);
                     if($state == 1){
-                        echo "<form action=\"tournament-management2.php?tname=\"". $tname."\" method=\"post\">";
+                        echo "<form action=\"tournament-management2.php?tname=".$tname."\" method=\"post\">";
                         echo "<div class=\"row\">";
                             echo "<div>";
                                 echo "<h5>Nº de jogos entre pares de equipas:</h5>";
-                                echo "<input type=\"number\" id=\"games\" name=\"games\" min=\"1\" max=\"2\" style=\"background: none;\"><br><br>";
+                                echo "<input type=\"number\" name=\"games\" min=\"1\" max=\"2\" style=\"background: none;\"><br><br>";
+                                echo "<span class=\"error\">". $tournamentGamesErr ."</span>";                                
                             echo "</div>";
                             echo "<div>";
                             echo "</div>";
