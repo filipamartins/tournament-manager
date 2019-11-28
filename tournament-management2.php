@@ -227,6 +227,8 @@
             global $connection;
             global $tournament;
             $completed_teams = array();
+            $paired_teams = array();
+            $weekdays = array();
           
             $slots = getSlots($tournament['Nome_torneio']);
             $teams = getTeams($tournament['Nome_torneio']);
@@ -236,10 +238,81 @@
                     array_push($completed_teams, $team);
                 } 
             }
+
+            while($slot = mysqli_fetch_array($slots)){
+                array_push($weekdays, $slot['Numero_dia']);
+            } 
+
+            $nTeams = sizeof($completed_teams);
+            if($nTeams %2 !=0){
+                array_push($completed_teams, NULL);//add ghost team
+                $nTeams+=1;
+            }
+            /*
+            echo "ARRAY INICIAL ";
+            for ($i = 0; $i < $nTeams; $i++){
+                $name = $completed_teams[$i];
+                if($name !=NULL){
+                    echo $name["Nome_equipa"];
+                }else{
+                    echo "NULL";
+                }
+            }*/
+    
+            $initialTeam = $completed_teams[1]; //team in second position
+            $initialTeamName = $initialTeam['Nome_equipa'];
+
+
+            for ($i = 0; $i < $games; $i++){ // numero de voltas
+                echo "VOLTA ".$i;
+                do{                                     //ate obter todas as combinações
+                    for ($i = 0; $i < $nTeams; $i+=2){  // Jornada (Cada equipa joga uma vez)
+                        if(isset($completed_teams[$i]) and isset($completed_teams[$i+1])){
+                            $pair = array($completed_teams[$i], $completed_teams[$i+1]);
+                            array_push($paired_teams, $pair);
+                        }
+                    }
+                    /*
+                    echo "JORNADA";
+                    $n2 = sizeof($paired_teams);
+                    for ($i = 0; $i < $n2; $i++){
+                        $name1 = $paired_teams[$i][0];
+                        $name2 = $paired_teams[$i][1];
+                        echo "PAR final: ";
+                        if($name1 !=NULL){
+                            echo $name1["Nome_equipa"];
+                        }else{
+                            echo "NULL";
+                        }
+                        echo " -- ";
+                        if($name2 !=NULL){
+                            echo $name2["Nome_equipa"];
+                        }else{
+                            echo "NULL";
+                        }
+                    }*/
+
+                    //criar jogos jornada
+                    $second_team = $completed_teams[1];
+                    for ($i = 1; $i < $nTeams-1; $i++){
+                        $completed_teams[$i] = $completed_teams[$i + 1];
+                    }
+                    $completed_teams[$nTeams-1] = $second_team;
+                
+                    $secondPositionTeam = $completed_teams[1];
+                   
+                }while($initialTeamName != $secondPositionTeam['Nome_equipa']);
+            }
+
+            /*
+            
             //Numeric representation of the day of the week - 0 (for Sunday) through 6 (for Saturday)
             $dayofweek = date('w', strtotime($tournament['Data_inicio'])); 
-                                                                            
-            echo $dayofweek;
+            if(in_array($dayofweek, $weekdays)){
+
+            }  
+
+            echo $dayofweek;*/
 
         }
 
