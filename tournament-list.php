@@ -77,7 +77,7 @@
 				<h2>Lista de Torneios</h2>
 				<tr style="background: #afd2f0;">
 					<th>Torneio</th>
-					<th>Numero de Equipas</th>
+					<th>Nº de Equipas</th>
 					<th>Estado</th>
 					<th></th>			
 				</tr>
@@ -96,12 +96,39 @@
 							echo "<tr>";
 							echo "<td>" . $row['Nome_torneio'] . "</td>";
 
-							$query = sprintf("  SELECT count(*) FROM futebolamador.equipas 
-												WHERE equipas.Nome_torneio = \"%s\";", $row['Nome_torneio'] );
-						
-							$count = $connection->query($query);
-							$row2 = mysqli_fetch_array($count);
-							echo "<td>" . $row2[0] . "</td>";
+							$query = sprintf("  SELECT count(*), equipas.estado FROM futebolamador.equipas 
+												WHERE equipas.Nome_torneio = \"%s\"
+												GROUP BY equipas.estado;", $row['Nome_torneio'] );
+	
+							$result2 = $connection->query($query);
+							
+							$ready = false;
+							$count = 0;
+							while($row2 = mysqli_fetch_array($result2)){
+								$count += $row2[0];
+								if($row2[0] >= 2 and $row2[1] == 1){
+									$ready = true;
+								}
+							}
+							echo "<td>" . $count . "</td>";
+
+							$query = sprintf("  SELECT count(*) FROM futebolamador.jogos 
+												WHERE jogos.Nome_torneio = \"%s\";", $row['Nome_torneio'] );
+
+							$result3 = $connection->query($query);
+							$row3 = mysqli_fetch_array($result3);
+							if($ready and $row3[0] != 0 ){
+								echo "<td style = \"color: rgb(250,150,0);\">A decorrer</td>";
+							}
+							else if($ready){
+								echo "<td style = \"color: rgb(0,200,0);\">Pronto a iniciar</td>";
+							}else{
+								echo "<td>Não Pronto</td>";
+							}
+
+
+
+
 							echo "<td><a href=\"tournament-detail.php?tname=".$row['Nome_torneio']."\" style=\"color:#5c3ab7;\">ver detalhes</a></td>";
 							
 							
