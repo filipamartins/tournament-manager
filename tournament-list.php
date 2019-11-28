@@ -77,8 +77,9 @@
 				<h2>Lista de Torneios</h2>
 				<tr style="background: #afd2f0;">
 					<th>Torneio</th>
-					<th> </th>
-				
+					<th>Numero de Equipas</th>
+					<th>Estado</th>
+					<th></th>			
 				</tr>
 				<?php
 					require_once "connect.php";
@@ -94,6 +95,13 @@
 						while($row = mysqli_fetch_array($result)){
 							echo "<tr>";
 							echo "<td>" . $row['Nome_torneio'] . "</td>";
+
+							$query = sprintf("  SELECT count(*) FROM futebolamador.equipas 
+												WHERE equipas.Nome_torneio = \"%s\";", $row['Nome_torneio'] );
+						
+							$count = $connection->query($query);
+							$row2 = mysqli_fetch_array($count);
+							echo "<td>" . $row2[0] . "</td>";
 							echo "<td><a href=\"tournament-detail.php?tname=".$row['Nome_torneio']."\" style=\"color:#5c3ab7;\">ver detalhes</a></td>";
 							
 							
