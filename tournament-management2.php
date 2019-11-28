@@ -24,16 +24,15 @@
             throw new Exception(mysqli_connect_errno());
         } else{
             //echo "connected successfully";
-            $query = sprintf(  "SELECT * 
-                                FROM futebolamador.torneios 
-                                WHERE torneios.Nome_torneio = \"%s\";", $tname  );
+        }
+        $query = sprintf(  "SELECT * FROM futebolamador.torneios 
+                            WHERE torneios.Nome_torneio = \"%s\";", $tname  );
 
-            $result_tournament = $connection->query($query);
-			$tournament = mysqli_fetch_array($result_tournament);
-			$tournamentstart = $tournament['Data_inicio'];
-            $tournamentend = $tournament['Data_fim'];
-            //$connection->close();
-		}
+        $result_tournament = $connection->query($query);
+        $tournament = mysqli_fetch_array($result_tournament);
+        $tournamentstart = $tournament['Data_inicio'];
+        $tournamentend = $tournament['Data_fim'];
+        //$connection->close();
 		
 		if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			if(isset($_POST["submit_date"])) { 
@@ -107,15 +106,21 @@
             }
             else if(isset($_POST["submit_games"])) {
                 $games = test_input($_POST["games"]);
+                $error = false;
 
                 if (empty($_POST["games"])) {
                     $tournamentGamesErr = "Obrigatório indicar número de jogos.";
                     $error = true;
                 }
                 if(!$error){
-                    $query = sprintf("  UPDATE futebolamador.torneios
-                                        SET torneios.Numero_confrontos = '%s'
+                    $query = sprintf("  UPDATE futebolamador.torneios SET torneios.Numero_confrontos = '%s'
                                         WHERE torneios.Nome_torneio = '%s';", $games, $tname);
+                    if ($connection->query($query) === TRUE) {
+                        generateGames($games);
+                        
+                    
+                    
+                    }
                 }
             
             
@@ -127,7 +132,7 @@
 			global $connection;
 			$query = sprintf(  "SELECT utilizadores.Primeiro_nome, utilizadores.Ultimo_nome FROM futebolamador.utilizadores 
 								WHERE utilizadores.CC IN (  SELECT gestores_torneio_torneios.CC FROM futebolamador.gestores_torneio_torneios 
-															WHERE gestores_torneio_torneios.Nome_torneio = \"%s\");", $tname  );
+															WHERE gestores_torneio_torneios.Nome_torneio = \"%s\");", $tname );
 	
 			$managers = $connection->query($query);
 			return $managers;
@@ -136,7 +141,7 @@
 		function getTeams($tname){
 			global $connection;
 			$query = sprintf(  "SELECT * FROM futebolamador.equipas 
-								WHERE equipas.Nome_torneio = \"%s\";", $tname  );
+								WHERE equipas.Nome_torneio = \"%s\";", $tname );
 
 			$teams = $connection->query($query);
 			return $teams;
@@ -148,14 +153,14 @@
 								FROM futebolamador.utilizadores 
 								WHERE utilizadores.CC IN (  SELECT equipas_jogadores.CC 
 															FROM futebolamador.equipas_jogadores 
-															WHERE equipas_jogadores.Nome_equipa = '%s');", $teamName);
+															WHERE equipas_jogadores.Nome_equipa = '%s');", $teamName );
 			$team_players = $connection->query($query);
 			return $team_players;
 		}
 
 		function getTeamCaptain($teamName){
 			global $connection;
-			$query = sprintf("SELECT equipas.CC FROM futebolamador.equipas WHERE equipas.Nome_equipa = \"%s\";", $teamName);
+			$query = sprintf("SELECT equipas.CC FROM futebolamador.equipas WHERE equipas.Nome_equipa = \"%s\";", $teamName );
 			$result_captainCC = $connection->query($query);
 			$captainCC = mysqli_fetch_array($result_captainCC);
 			return $captainCC;
@@ -165,11 +170,22 @@
 			global $connection;
 			$query = sprintf(  "SELECT utilizadores.CC, utilizadores.Primeiro_nome, utilizadores.Ultimo_nome
 													FROM futebolamador.utilizadores
-													WHERE utilizadores.CC = '%s';", $team['CC']  );
+													WHERE utilizadores.CC = '%s';", $team['CC'] );
 								
 			$result_captain = $connection->query($query);
 			$captain = mysqli_fetch_array($result_captain);
 			return $captain;
+        }
+        
+        function getSlots($tname){
+			global $connection;
+			$query = sprintf(  "SELECT * from futebolamador.slot 
+                                JOIN futebolamador.campos on slot.Nome_campo=campos.Nome_campo
+                                WHERE slot.id_slot IN ( SELECT slot_torneios.id_slot from futebolamador.slot_torneios 
+                                                        WHERE slot_torneios.Nome_torneio = \"%s\");", $tname  );
+
+			$slots = $connection->query($query);
+			return $slots;
 		}
 
         function getNumberGames($tname){
@@ -207,6 +223,27 @@
             }
         }
         
+        function generateGames($games){
+            global $connection;
+            global $tournament;
+            $completed_teams = array();
+          
+            $slots = getSlots($tournament['Nome_torneio']);
+            $teams = getTeams($tournament['Nome_torneio']);
+
+            while($team = mysqli_fetch_array($teams)){
+                if($team['Estado'] == 1){
+                    array_push($completed_teams, $team);
+                } 
+            }
+            //Numeric representation of the day of the week - 0 (for Sunday) through 6 (for Saturday)
+            $dayofweek = date('w', strtotime($tournament['Data_inicio'])); 
+                                                                            
+            echo $dayofweek;
+
+        }
+
+
 		function test_input($data) {
 			$data = trim($data);
 			$data = stripslashes($data);

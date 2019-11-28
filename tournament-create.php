@@ -20,6 +20,7 @@
 	$tournamentname = $tournamentstart = $tournamentend = "";
 	$weekday = array("monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday");
 	$weekdayPT = array("Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado", "Domingo");
+	$nRepresentation = array(1, 2, 3, 4, 5, 6, 0); //Numeric representation of the day of the week
 	$disabled = array(); 
 	$day = array();
 	$start = $end = array();
@@ -88,16 +89,16 @@
 			}
 		}
 	
-
-		$query = sprintf("INSERT INTO futebolamador.torneios (`Nome_torneio`,`Data_inicio`,`Data_fim`)
-			VALUES ('%s','%s','%s');", $tournamentname, $tournamentstart, $tournamentend);
 		if(!$error){
+			$query = sprintf("  INSERT INTO futebolamador.torneios (`Nome_torneio`,`Data_inicio`,`Data_fim`)
+								VALUES ('%s','%s','%s');", $tournamentname, $tournamentstart, $tournamentend);
+
 			if ($connection->query($query) === TRUE) {
 				echo "New tournament created successfully";
 				for ($i = 0; $i < 7; $i++){
 					if($day[$i] != ""){
-						$query = sprintf("INSERT INTO futebolamador.slot (`Nome_campo`,`Hora_inicio`,`Hora_fim`,`Dia_semana`)
-						VALUES ('%s','%s','%s','%s');", $field[$i], $start[$i], $end[$i], $weekdayPT[$i]);
+						$query = sprintf("INSERT INTO futebolamador.slot (`Nome_campo`,`Hora_inicio`,`Hora_fim`,`Dia_semana`, `Numero_dia`)
+						VALUES ('%s','%s','%s','%s','%s');", $field[$i], $start[$i], $end[$i], $weekdayPT[$i], $nRepresentation[$i]);
 						if ($connection->query($query) === TRUE) {
 							echo "New slot created successfully";
 							$slot_id = mysqli_insert_id($connection);
