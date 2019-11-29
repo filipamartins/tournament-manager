@@ -86,14 +86,10 @@
 						    </div>
 						</div>
 					</li>
-					
 					<!-- <li><a href="help.html">Ajuda</a></li>-->
 				</ul>
-				
 			</nav>
-
 		</header>
-		
 
 		<!-- Colocar conteudo do ecra -->
 		<div class="row">
@@ -120,7 +116,6 @@
 					<th>Campo</th>
 				</tr>
 				<?php
-					
 					$games = getTournamentGames($tname);
 					while($game = mysqli_fetch_array($games)){
 						echo "<tr>";
@@ -147,13 +142,11 @@
 							echo "<th>Equipa Visitante</th>";
 							echo "<th>Horário</th>";
 							echo "<th>Campo</th>";
-							
 						echo"</tr>";
 							
 						$games = getTournamentGames($tname);
 						while($game = mysqli_fetch_array($games)){
 							echo "<tr>";
-							
 							if($game['Volta'] == 2){
 								echo "<td>" . $game['Jornada'] . "</td>";
 								echo "<td>" . $game['Data'] . "</td>";
@@ -168,7 +161,6 @@
 						$connection->close();
 					}
 				?>
-				
 			</div>
 		</div>
 	</body>

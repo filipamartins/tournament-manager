@@ -58,8 +58,8 @@
 
 		$result = $connection->query($query);
 		
-		while($row = mysqli_fetch_array($result)){
-			if($row[0] >= 2 and $row[1] == 1)
+		while($row = mysqli_fetch_array($result)){ 
+			if($row[0] >= 2 and $row[1] == 1) //se existem pelo menos duas equipas completas
 				$ready = true;
 		}
 		$number_games = getNumberGames($tname);
@@ -121,7 +121,6 @@
 						    </div>
 						</div>
 					</li>
-					
 					<!-- <li><a href="help.html">Ajuda</a></li>-->
 				</ul>
 			</nav>
@@ -167,7 +166,6 @@
 							}
 							echo "<td><a href=\"tournament-management2.php?tname=".$tournament['Nome_torneio']."\" style=\"color:#5c3ab7;\">Gerir Torneio</a></td>";
 							echo "</tr>";
-							
 						}
 						echo "</table>"; 
 					}
@@ -177,7 +175,6 @@
 					}
 					$connection->close();
 				?>
-				
 			</div>
 		</div>
 	</body>

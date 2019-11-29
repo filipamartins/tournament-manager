@@ -54,7 +54,6 @@
 			return 0; //Não pronto
 		}
 	}
-
 ?>
 	<head>
 		<meta charset="UTF-8">
@@ -102,15 +101,11 @@
 						    </div>
 						</div>
 					</li>
-					
 					<!-- <li><a href="help.html">Ajuda</a></li>-->
 				</ul>
-				
 			</nav>
-
 		</header>
 		
-
 		<!-- Colocar conteudo do ecra -->
 		<div class="row">
 			<div class="3u">

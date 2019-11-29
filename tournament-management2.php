@@ -382,9 +382,7 @@
 					</li>
 					<!-- <li><a href="help.html">Ajuda</a></li>-->
 				</ul>
-				
 			</nav>
-
 		</header>
 		
 
@@ -476,7 +474,6 @@
 							echo"<tr>";
 							echo"<td>".$team['Nome_equipa']."</td>";
 
-							
 							$captain = getTeamCaptainInfo($team);
 
 							echo"<td>".$captain[1]." ".$captain[2]."</td>";
@@ -484,8 +481,6 @@
 							$team_players = getTeamPlayers($team['Nome_equipa']);
 						
 							echo "<td><select name=\"players\">";
-							
-							
 							echo "<option value=\"\" selected hidden>Alterar capitão >></option>;";
 							while($player = mysqli_fetch_array($team_players)){
 								echo "<option value=\"".$player['CC']."\">"

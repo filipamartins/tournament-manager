@@ -25,7 +25,6 @@
 			$tournament = mysqli_fetch_array($result_tournament);
 			$tournamentstart = $tournament['Data_inicio'];
 			$tournamentend = $tournament['Data_fim'];
-            //$connection->close();
 		}
 
 
@@ -110,9 +109,7 @@
 					</li>
 					<!-- <li><a href="help.html">Ajuda</a></li>-->
 				</ul>
-				
 			</nav>
-
 		</header>
 		
 
@@ -129,7 +126,7 @@
 				</section>
 			</div>
 			<div class="9u" style="padding-top: 30px; padding-right: 40px;">
-                <h2><?php echo $tournament['Nome_torneio'];?></h2><br>
+                <h2><?php echo $tournament['Nome_torneio'];?></h2>
 				
 				<div class="row">
 					<div>
@@ -213,8 +210,8 @@
 						}
 						echo "</table><br>";
 					}
+					$connection->close();
                 ?>
-				
 			</div>
 		</div>
 	</body>

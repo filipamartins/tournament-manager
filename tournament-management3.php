@@ -6,7 +6,6 @@
 -->
 	<html lang="en">
 
-
 	<?php
         $tname = $_GET["tname"];
 
@@ -30,7 +29,6 @@
                     $game_id = test_input($_POST["game"]);
 
                     $query = sprintf("DELETE FROM futebolamador.jogos WHERE jogos.id_jogo = '%s';", $game_id);
-
 					if ($connection->query($query) === TRUE) {
                         echo "Game deleted successfully";
                     }
@@ -38,12 +36,28 @@
                         echo "Error: " . $query . "<br>" . $connection->error;
                     }
                 }
-                /*else if($_POST["start_tournament"])) {
-                    //header('Location: tournament-management3.php?tname='.$tournament['Nome_torneio'].'');
-                }*/
+                else if(isset($_POST["start_tournament"])) {
+					$query = sprintf("  UPDATE futebolamador.torneios SET torneios.Estado = '%s'
+										WHERE torneios.Nome_torneio = '%s';", 1, $tname);
+					if ($connection->query($query) === TRUE) {
+						echo "Tournament games saved successfully";
+						header('Location: tournament-games.php?tname='.$tname.'');
+					}
+					else {
+                        echo "Error: " . $query . "<br>" . $connection->error;
+                    }
+				}
+				else if(isset($_POST["cancel_games"])){
+					$query = sprintf("DELETE FROM futebolamador.jogos WHERE jogos.Nome_torneio = '%s';", $tname);
+					if ($connection->query($query) === TRUE) {
+						echo "Games deleted successfully";
+						header('Location: tournament-management2.php?tname='.$tname.'');
+                    }
+                    else {
+                        echo "Error: " . $query . "<br>" . $connection->error;
+                    }
+				}
             }
-           
-			//$connection->close();
 		}
 
 		function getTournamentGames($tname){
@@ -204,16 +218,18 @@
 							}
 							echo "</tr>";
 						}
-                        echo "</table>"; 
-                       
-                        echo "<div style=\"text-align:center\">";
-                        echo "<a href=\"tournament-games.php?tname=".$tname."\"><input type=\"submit\" name=\"start_tournament\" style=\"background-color:green;\" value=\"INICIAR TORNEIO!\"></a><br>";
-                     
-                        echo "</div>";
-						$connection->close();
-					}
+						echo "</table>";
+					} 
 				?>
-				
+				<div style="text-align:center; display:flex;">
+				<form action="tournament-management3.php?tname=<?php echo $tname;?>" method="post">
+					<input type="submit"  name="cancel_games" value="<- Voltar">
+				</form>
+				<form action="tournament-management3.php?tname=<?php echo $tname;?>" method="post">
+					<input type="submit"  name="start_tournament" style="background-color:green;" value="INICIAR TORNEIO!">
+				</form>
+				</div>
+				<?php $connection->close(); ?>
 			</div>
 		</div>
 	</body>
