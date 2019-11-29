@@ -124,8 +124,10 @@
 				</section>
 			</div>
 			<div class="9u" style="padding-top: 30px; padding-right: 40px;">
-			<table style="width:100%">
+				<img src="images/list_t1.jpg" onerror = "this.src= 'images/list_t2.jpg';" style="max-width:100%;">
 				<h2>Lista de Torneios</h2>
+
+				<table style="width:100%">
 				<tr style="background: #afd2f0;">
 					<th>Torneio</th>
 					<th>Nº de Equipas</th>

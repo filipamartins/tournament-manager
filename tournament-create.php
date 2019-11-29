@@ -248,6 +248,7 @@
 			</section>
 		</div>
 		<div class="9u" style="padding-top: 30px; padding-right: 40px;">
+			<h2>Criar Torneio:</h2>
 			<form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
 				<div>
 					Nome do Torneio:<br>
@@ -363,7 +364,7 @@
 					<span class="error" style = "padding-left:0px;"><?php echo $checkboxErr;?></span>
 					<span class="error" style = "padding-left:0px;"><?php echo $timeErr;?></span><p></p>
 					<span class="error" style = "padding-left:0px;"><?php echo $fieldErr;?></span>
-				</div><br>
+				</div>
 				<div style="text-align:center">
 					<input type="submit" value="Criar"><br>
 				</div>

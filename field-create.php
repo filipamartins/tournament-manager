@@ -168,6 +168,7 @@ function test_input($data) {
 				</section>
 			</div>
 			<div class="9u" style="padding-top: 30px; padding-right: 40px;">
+				<h2>Criar Campo:</h2>
                 <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
                     <div style = "width:60%;">
                         Nome do Campo:<br>
@@ -193,7 +194,7 @@ function test_input($data) {
                     <input type="text" name="gps" style = "width:40%" value="<?php echo $gps;?>"><br>
                     Custo(€):<br>
                     <input type="text" name="cost" style = "width:18%" value="<?php echo $cost;?>">
-                    <span class="error"><?php echo $costErr;?></span><br><br>
+                    <span class="error"><?php echo $costErr;?></span><br>
                     <div style="text-align:center">
                         <input type="submit" value="Criar"><br>
                     </div>
