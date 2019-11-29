@@ -23,13 +23,29 @@
                                 WHERE torneios.Nome_torneio = \"%s\";", $tname  );
 
             $result_tournament = $connection->query($query);
-			$nVoltas = mysqli_fetch_array($result_tournament);
+            $nVoltas = mysqli_fetch_array($result_tournament);
+            
+            if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                echo "Entrou aqui";
+                if(isset($_POST["delete_game"])) { 
+                    $game_id = test_input($_POST["game"]);
+
+                    $query = sprintf("DELETE FROM futebolamador.jogos WHERE jogos.id_jogo = '%s';", $game_id);
+
+					if ($connection->query($query) === TRUE) {
+                        echo "Game deleted successfully";
+                    }
+                    else {
+                        echo "Error: " . $query . "<br>" . $connection->error;
+                    }
+                }
+            }
 			//$connection->close();
 		}
 
 		function getTournamentGames($tname){
 			global $connection;
-			$query = sprintf("  SELECT jogos.Data, jogos.Nome_equipa_visitante, jogos.Nome_equipa_visitada, jogos.Jornada, 
+			$query = sprintf("  SELECT jogos.id_jogo, jogos.Data, jogos.Nome_equipa_visitante, jogos.Nome_equipa_visitada, jogos.Jornada, 
 										jogos.Volta, slot.Hora_inicio, slot.Hora_fim, slot.Nome_campo 
 								FROM futebolamador.jogos 
 								JOIN futebolamador.slot on slot.id_slot = jogos.id_slot 
@@ -38,7 +54,13 @@
 						
 			$games = $connection->query($query);
 			return $games;
-		}
+        }
+        function test_input($data) {
+            $data = trim($data);
+            $data = stripslashes($data);
+            $data = htmlspecialchars($data);
+            return $data;
+        }
 	?>
 
 	<head>
@@ -52,6 +74,7 @@
 		<script src="js/skel.min.js"></script>
 		<script src="js/skel-layers.min.js"></script>
 		<script src="js/init.js"></script>
+        <script src="js/tournament.js"></script>
 		<noscript>
 		 <!--	<link rel="stylesheet" href="css/skel.css" /> -->
 			<link rel="stylesheet" href="css/style.css"/>
@@ -89,9 +112,7 @@
 					
 					<!-- <li><a href="help.html">Ajuda</a></li>-->
 				</ul>
-				
 			</nav>
-
 		</header>
 		
 
@@ -118,6 +139,8 @@
 					<th>Equipa Visitante</th>
 					<th>Horário</th>
 					<th>Campo</th>
+                    <th></th>
+                    <th></th>
 				</tr>
 				<?php
 					
@@ -130,7 +153,13 @@
 							echo "<td>" . $game['Nome_equipa_visitada'] . "</td>";
 							echo "<td>" . $game['Nome_equipa_visitante'] . "</td>";
 							echo "<td>" . $game['Hora_inicio'] . " - " . $game['Hora_fim'] . "</td>";
-							echo "<td>" . $game['Nome_campo'] . "</td>";
+                            echo "<td>" . $game['Nome_campo'] . "</td>";
+                            echo "<form action=\"tournament-management3.php?tname=".$tname."\" method=\"post\">";
+                            echo "<input type=\"hidden\" name=\"game\" id=\"hiddenField\" value=\"".$game['id_jogo']."\" />";
+                            echo "<td><input type=\"submit\" id=\"confirm-".$game['id_jogo']."\"  name =\"delete_game\" style=\"visibility:hidden;background-color:red\"  value=\"Confirmar\"></td>";
+                            echo "<td><input type=\"button\" id=\"delete-".$game['id_jogo']."\" name =\"\" onclick=\"buttonConfirm(".$game['id_jogo'].")\" value=\"Apagar\">";
+                            echo "<input type=\"button\" id=\"cancel-".$game['id_jogo']."\" style=\"visibility:hidden;\" name =\"\" onclick=\"buttonCancel(".$game['id_jogo'].")\" value=\"Cancelar\"></td>";
+                            echo "</form>";
 						}
 						echo "</tr>";
 					}
@@ -146,7 +175,9 @@
 							echo "<th>Equipa Visitada</th>";
 							echo "<th>Equipa Visitante</th>";
 							echo "<th>Horário</th>";
-							echo "<th>Campo</th>";
+                            echo "<th>Campo</th>";
+                            echo "<th></th>";
+                            echo "<th></th>";
 							
 						echo"</tr>";
 							
@@ -160,7 +191,13 @@
 								echo "<td>" . $game['Nome_equipa_visitante'] . "</td>";
 								echo "<td>" . $game['Nome_equipa_visitada'] . "</td>";
 								echo "<td>" . $game['Hora_inicio'] . " - " . $game['Hora_fim'] . "</td>";
-								echo "<td>" . $game['Nome_campo'] . "</td>";
+                                echo "<td>" . $game['Nome_campo'] . "</td>";
+                                echo "<form action=\"tournament-management3.php?tname=".$tname."\" method=\"post\">";
+                                echo "<input type=\"hidden\" name=\"game\" id=\"hiddenField\" value=\"".$game['id_jogo']."\" />";
+                                echo "<td><input type=\"submit\" id=\"confirm-".$game['id_jogo']."\" style=\"visibility:hidden; name =\"delete_game\" background-color:red\"  value=\"Confirmar\"></td>";
+                                echo "<td><input type=\"button\" id=\"delete-".$game['id_jogo']."\" name =\"\" onclick=\"buttonConfirm(".$game['id_jogo'].")\" value=\"Apagar\">";
+                                echo "<input type=\"button\" id=\"cancel-".$game['id_jogo']."\" style=\"visibility:hidden;\" name =\"\" onclick=\"buttonCancel(".$game['id_jogo'].")\" value=\"Cancelar\"></td>";
+                                echo "</form>";
 							}
 							echo "</tr>";
 						}

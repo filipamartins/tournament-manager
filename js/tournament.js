@@ -36,3 +36,31 @@ function getSaveButton() {
 	}
 	
 }
+function buttonConfirm(id_jogo) {
+	var button = document.getElementById("delete-"+id_jogo);
+	button.style.visibility = "hidden";
+	button.style.display = "none";
+
+	var button = document.getElementById("confirm-"+id_jogo);
+	button.style.visibility = "visible";
+	//button.style.display = "block";
+
+	var button = document.getElementById("cancel-"+id_jogo);
+	button.style.visibility = "visible";
+	//button.style.display = "block";
+}
+
+function buttonCancel(id_jogo) {
+	var button = document.getElementById("delete-"+id_jogo);
+	button.style.visibility = "visible";
+	button.style.display = "block";
+
+	var button = document.getElementById("confirm-"+id_jogo);
+	button.style.visibility = "hidden";
+	//button.style.display = "none";
+
+	var button = document.getElementById("cancel-"+id_jogo);
+	button.style.visibility = "hidden";
+	//button.style.display = "none";
+}
+
