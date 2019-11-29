@@ -269,9 +269,9 @@
                 $initialTeamName = $initialTeam['Nome_equipa'];
                 $jornada = 0;
                 echo "VOLTA ".$j;
-                do{      
-                                                  //ate obter todas as combinações
-                    for ($i = 0; $i < $nTeams; $i+=2){  // Jornada (Cada equipa joga uma vez)
+                do{                                     //ate obter todas as combinações para ter uma volta 
+                                                        //(todas as equipas jogam uma vez com cada uma das outras)
+                    for ($i = 0; $i < $nTeams; $i+=2){  // Jornada (Cada equipa joga apenas uma vez)
                         if(isset($completed_teams[$i]) and isset($completed_teams[$i+1])){
                             $pair = array($completed_teams[$i], $completed_teams[$i+1]);
                             array_push($paired_teams, $pair);
@@ -298,7 +298,7 @@
                         }
                     }*/
 
-                    //criar jogos jornada
+                    //criar jogos da jornada
                     $n2 = sizeof($paired_teams);
 
                     for ($i = 0; $i < $n2; $i++){
@@ -321,6 +321,7 @@
                         else {
                             echo "Error: " . $query . "<br>" . $connection->error;
                         }
+                        //Avançar a data para o proximo jogo ou para a proxima jornada
                         $date = date('Y-m-d', strtotime($date .' +1 day'));	
                         $dayofweek = date('w', strtotime($date));
                     }
@@ -334,16 +335,24 @@
                 
                     $secondPositionTeam = $completed_teams[1];
                     
-                    //Avançar a data para a proxima jornada
-                    $date = date('Y-m-d', strtotime($date .' +1 day'));	
-                    $dayofweek = date('w', strtotime($date));
-                   
                 }while($initialTeamName != $secondPositionTeam['Nome_equipa']);
             }
+            $end_date = $tournament['Data_fim'];
+            $date = date('Y-m-d', strtotime($date .' -1 day')); //correct real end date of tournament 	
+            if($date > $end_date){
+                $query = sprintf("  UPDATE futebolamador.torneios
+									SET torneios.Data_fim = '%s'
+									WHERE torneios.Nome_torneio = '%s';", $date, $tournament['Nome_torneio']);
+                
+                if ($connection->query($query) === TRUE) {
+					echo "End date updated successfully";
+				}
+				else {
+					echo "Error: " . $query . "<br>" . $connection->error;
+				}
 
-            
-            
-            
+            }
+                
 
         }
 
