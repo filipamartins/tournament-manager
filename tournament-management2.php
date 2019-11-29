@@ -350,10 +350,7 @@
 				else {
 					echo "Error: " . $query . "<br>" . $connection->error;
 				}
-
             }
-                
-
         }
 
 

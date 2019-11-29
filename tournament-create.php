@@ -88,8 +88,31 @@
 				}
 			}
 		}
-	
+		
 		if(!$error){
+			//Check if tournament to be created intersects another tournament already created			
+			for ($i = 0; $i < 7; $i++){
+				if($day[$i] != ""){
+					$query = sprintf("  SELECT torneios.Nome_torneio, slot.Hora_inicio, slot.Hora_fim, slot.Numero_dia, slot.Nome_campo, torneios.Data_inicio, torneios.Data_fim
+								FROM futebolamador.torneios
+								JOIN futebolamador.slot_torneios on slot_torneios.Nome_torneio = torneios.Nome_torneio
+								JOIN futebolamador.slot on slot_torneios.id_slot = slot.id_slot
+								WHERE ('%s' <= torneios.Data_fim  AND torneios.Data_inicio <= '%s') AND ('%s' LIKE slot.Nome_campo ) 
+								AND ('%s'=slot.Numero_dia) AND ('%s' <= slot.Hora_fim  AND slot.Hora_inicio <= '%s') ;", 
+								$tournamentstart, $tournamentend, $field[$i], $nRepresentation[$i], $start[$i], $end[$i]);
+					//START A <= END B
+					//START B <= END A
+					$intersection = $connection->query($query);
+					if(mysqli_num_rows($intersection) != 0){
+						$timeErr = "As datas, horas e campo colocados são incompativeis com as de outro torneio. Por favor altere um destes campos.";
+						$error = true;
+					} 
+				}
+			}
+		}
+		
+		if(!$error){
+
 			$query = sprintf("  INSERT INTO futebolamador.torneios (`Nome_torneio`,`Data_inicio`,`Data_fim`)
 								VALUES ('%s','%s','%s');", $tournamentname, $tournamentstart, $tournamentend);
 
@@ -277,7 +300,7 @@
 							Inicio: <input type="time" name="start3" id = "start3" value=
 							"<?php echo $start[2];?>" <?php echo $disabled[2];?>><br>
 							Fim: <input type="time" name="end3" style="margin-left: 10px;" id = "end3" value=
-							"<?php echo $end3;?>" <?php echo $disabled[2];?>><br><br>
+							"<?php echo $end[2];?>" <?php echo $disabled[2];?>><br><br>
 							Campo:<br>
 							<select name="field3" id="field3" <?php echo $disabled[2];?>>
 								<?php
