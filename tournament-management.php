@@ -8,6 +8,7 @@
 
 
 <?php
+ 	$user_id = 11111111;
 	require_once "connect.php";
 	mysqli_report(MYSQLI_REPORT_STRICT);// throw errors, not warnings
 
@@ -16,7 +17,21 @@
 		throw new Exception(mysqli_connect_errno());
 	} else{
 		//echo "connected successfully";
-		$tournaments = $connection->query("SELECT * FROM futebolamador.torneios;");
+		$query = sprintf(  "SELECT * FROM futebolamador.gestores_torneio 
+							WHERE gestores_torneio.CC = '%s';", $user_id );
+		
+		$result = $connection->query($query);
+		if(mysqli_num_rows($result) ==0){
+			header('Location: tournament.php');
+			echo "O utilizador não tem privilégios de gestor para visualizar o conteudo da página.";
+		}
+		
+		$query = sprintf("  SELECT * FROM futebolamador.torneios 
+							WHERE torneios.Nome_torneio in (SELECT gestores_torneio_torneios.Nome_torneio 
+															FROM futebolamador.gestores_torneio_torneios 
+															WHERE gestores_torneio_torneios.CC = '%s');", $user_id); 
+		
+		$tournaments = $connection->query($query);
 	}
 
 

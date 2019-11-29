@@ -14,7 +14,7 @@
 </style>
 
 <?php
-
+	$user_id = 11111111;
 	// define variables and set to empty values
 	$tournamentnameErr =  $tournamentstartErr = $tournamentendErr =  $checkboxErr = $timeErr = $fieldErr = "";
 	$tournamentname = $tournamentstart = $tournamentend = "";
@@ -118,6 +118,7 @@
 
 			if ($connection->query($query) === TRUE) {
 				echo "New tournament created successfully";
+				setUserToManager($tournamentname); //set user that created tournament to manager of that tournament
 				for ($i = 0; $i < 7; $i++){
 					if($day[$i] != ""){
 						$query = sprintf("INSERT INTO futebolamador.slot (`Nome_campo`,`Hora_inicio`,`Hora_fim`,`Dia_semana`, `Numero_dia`)
@@ -136,10 +137,10 @@
 						} else {
 							echo "Error: " . $query . "<br>" . $connection->error;
 						}
+						header('Location: tournament-management.php');
+						$connection->close();
 					}
 				}
-				header('Location: tournament-management.php');
-				$connection->close();
 			} else {
 				echo "Error: " . $query . "<br>" . $connection->error;
 			}
@@ -177,6 +178,25 @@
 					Opção ".$option." &nbsp;&nbsp;&nbsp;>&nbsp; ".$row['Nome_campo']."
 					</option>";
 			$option++;
+		}
+	}
+
+	function setUserToManager($tname){
+		global $connection;
+		global $user_id;
+		$query = sprintf("  INSERT INTO futebolamador.gestores_torneio_torneios (`CC`, `Nome_torneio`) 
+							VALUES ('%s','%s');", $user_id, $tname );
+		if ($connection->query($query) === TRUE) {
+			$query = sprintf("	INSERT INTO futebolmador.gestores_torneio(`CC`) VALUES ('%s');", $user_id);
+			if ($connection->query($query) === TRUE) {
+				echo "User set to tournament manager.";
+			}
+			else {
+				echo "Error: " . $query . "<br>" . $connection->error;
+			}
+		}
+		else {
+			echo "Error: " . $query . "<br>" . $connection->error;
 		}
 	}
 ?>

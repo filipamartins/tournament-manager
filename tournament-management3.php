@@ -8,7 +8,7 @@
 
 
 	<?php
-		$tname = $_GET["tname"];
+        $tname = $_GET["tname"];
 
 		require_once "connect.php";
 		mysqli_report(MYSQLI_REPORT_STRICT);// throw errors, not warnings
@@ -26,7 +26,6 @@
             $nVoltas = mysqli_fetch_array($result_tournament);
             
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                echo "Entrou aqui";
                 if(isset($_POST["delete_game"])) { 
                     $game_id = test_input($_POST["game"]);
 
@@ -39,7 +38,11 @@
                         echo "Error: " . $query . "<br>" . $connection->error;
                     }
                 }
+                /*else if($_POST["start_tournament"])) {
+                    //header('Location: tournament-management3.php?tname='.$tournament['Nome_torneio'].'');
+                }*/
             }
+           
 			//$connection->close();
 		}
 
@@ -194,14 +197,19 @@
                                 echo "<td>" . $game['Nome_campo'] . "</td>";
                                 echo "<form action=\"tournament-management3.php?tname=".$tname."\" method=\"post\">";
                                 echo "<input type=\"hidden\" name=\"game\" id=\"hiddenField\" value=\"".$game['id_jogo']."\" />";
-                                echo "<td><input type=\"submit\" id=\"confirm-".$game['id_jogo']."\" style=\"visibility:hidden; name =\"delete_game\" background-color:red\"  value=\"Confirmar\"></td>";
+                                echo "<td><input type=\"submit\" id=\"confirm-".$game['id_jogo']."\" style=\"visibility:hidden;background-color:red;\" name =\"delete_game\"   value=\"Confirmar\"></td>";
                                 echo "<td><input type=\"button\" id=\"delete-".$game['id_jogo']."\" name =\"\" onclick=\"buttonConfirm(".$game['id_jogo'].")\" value=\"Apagar\">";
                                 echo "<input type=\"button\" id=\"cancel-".$game['id_jogo']."\" style=\"visibility:hidden;\" name =\"\" onclick=\"buttonCancel(".$game['id_jogo'].")\" value=\"Cancelar\"></td>";
                                 echo "</form>";
 							}
 							echo "</tr>";
 						}
-						echo "</table>"; 
+                        echo "</table>"; 
+                       
+                        echo "<div style=\"text-align:center\">";
+                        echo "<a href=\"tournament-games.php?tname=".$tname."\"><input type=\"submit\" name=\"start_tournament\" style=\"background-color:green;\" value=\"INICIAR TORNEIO!\"></a><br>";
+                     
+                        echo "</div>";
 						$connection->close();
 					}
 				?>
