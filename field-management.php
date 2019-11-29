@@ -5,6 +5,32 @@
 	Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
 -->
 <html lang="en">
+
+<?php
+	$user_id = 11111111;
+	require_once "connect.php";
+	mysqli_report(MYSQLI_REPORT_STRICT);// throw errors, not warnings
+
+	$connection = new mysqli($host, $db_user, $db_password, $db_name);
+	if ($connection->connect_errno != 0){
+		throw new Exception(mysqli_connect_errno());
+	} else{
+		//echo "connected successfully";
+	}
+
+	function checkIfManager($user_id){
+		global $connection;
+		$query = sprintf(  "SELECT * FROM futebolamador.gestores_torneio 
+							WHERE gestores_torneio.CC = '%s';", $user_id );
+
+		$result = $connection->query($query);
+		if(mysqli_num_rows($result) == 0){
+			return false;
+		}
+		return true;
+	}
+?>
+
 	<head>
 		<meta charset="UTF-8">
 		<title>Futebol Amador</title>
@@ -86,35 +112,31 @@
 					<th>Custo</th>
 				</tr>
 				<?php
-					require_once "connect.php";
-					mysqli_report(MYSQLI_REPORT_STRICT);// throw errors, not warnings
-				
-					$connection = new mysqli($host, $db_user, $db_password, $db_name);
-					if ($connection->connect_errno != 0){
-						throw new Exception(mysqli_connect_errno());
-					} else{
-						//echo "connected successfully";
-						$query = "SELECT * FROM futebolamador.campos;";
-						$result = $connection->query($query);
 					
-						while($row = mysqli_fetch_array($result)){
-							echo "<tr>";
-							echo "<td>" . $row['Nome_campo'] . "</td>";
-							echo "<td>" . $row['Rua'] . "</td>";
-							echo "<td>" . $row['Numero'] . "</td>";
-							echo "<td>" . $row['Cidade'] . "</td>";
-							echo "<td>" . $row['GPS'] . "</td>";
-							echo "<td>" . $row['Custo'] . "</td>";
-							echo "</tr>";
-						}
-						$connection->close();
+					$query = "SELECT * FROM futebolamador.campos;";
+					$result = $connection->query($query);
+				
+					while($row = mysqli_fetch_array($result)){
+						echo "<tr>";
+						echo "<td>" . $row['Nome_campo'] . "</td>";
+						echo "<td>" . $row['Rua'] . "</td>";
+						echo "<td>" . $row['Numero'] . "</td>";
+						echo "<td>" . $row['Cidade'] . "</td>";
+						echo "<td>" . $row['GPS'] . "</td>";
+						echo "<td>" . $row['Custo'] . "</td>";
+						echo "</tr>";
 					}
+					
 				?>
 				</table> 
-				
-				<a href="field-create.php">
-					<input type="button" value ="Adicionar Campo"> <br>
-				</a><br>
+				<?php
+					if(checkIfManager($user_id)){
+						$connection->close();
+						echo "<a href=\"field-create.php\">";
+							echo"<input type=\"button\" value =\"Adicionar Campo\"><br>";
+						echo"</a><br>";
+					}
+				?>
 			</div>
 		</div>
 	</body>

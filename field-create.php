@@ -80,16 +80,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } else {
                 echo "Error: " . $query . "<br>" . $connection->error;
             }
- 
-            /*
-            $query = sprintf("UPDATE futebolamador.campos
-                                SET `GPS` = '%s', `Numero` = '%s', 
-                                WHERE futebolamador.campos.Nome_campo = '%s';",  , $campname);*/
         }
-		
 	}
-
-
 }
 
 function test_input($data) {
@@ -146,12 +138,9 @@ function test_input($data) {
 						    </div>
 						</div>
 					</li>
-					
 					<!-- <li><a href="help.html">Ajuda</a></li>-->
 				</ul>
-				
 			</nav>
-
 		</header>
 		
 

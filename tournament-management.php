@@ -17,14 +17,6 @@
 		throw new Exception(mysqli_connect_errno());
 	} else{
 		//echo "connected successfully";
-		$query = sprintf(  "SELECT * FROM futebolamador.gestores_torneio 
-							WHERE gestores_torneio.CC = '%s';", $user_id );
-		
-		$result = $connection->query($query);
-		if(mysqli_num_rows($result) ==0){
-			header('Location: tournament.php');
-			echo "O utilizador não tem privilégios de gestor para visualizar o conteudo da página.";
-		}
 		
 		$query = sprintf("  SELECT * FROM futebolamador.torneios 
 							WHERE torneios.Nome_torneio in (SELECT gestores_torneio_torneios.Nome_torneio 
@@ -34,6 +26,17 @@
 		$tournaments = $connection->query($query);
 	}
 
+	function checkIfManager($user_id){
+		global $connection;
+		$query = sprintf(  "SELECT * FROM futebolamador.gestores_torneio 
+							WHERE gestores_torneio.CC = '%s';", $user_id );
+
+		$result = $connection->query($query);
+		if(mysqli_num_rows($result) == 0){
+			return false;
+		}
+		return true;
+	}
 
 	function getNumberGames($tname){
 		global $connection;
@@ -121,9 +124,7 @@
 					
 					<!-- <li><a href="help.html">Ajuda</a></li>-->
 				</ul>
-				
 			</nav>
-
 		</header>
 		
 
@@ -141,35 +142,41 @@
 			</div>
 			<div class="9u" style="padding-top: 30px; padding-right: 40px;">
 				<img src="images/tournament4.jpg" onerror = "this.src= 'images/tournament11.jpg';" style="max-width:100%;">
-				<table style="width:100%">
 				<h2>Gestão de Torneios</h2>
-				<tr style="background: #afd2f0;">
-					<th>Torneio</th>
-					<th> </th>
-					
-					<th> </th>
-				</tr>
 				<?php
-
-					while($tournament = mysqli_fetch_array($tournaments)){
-						echo "<tr>";
-						echo "<td>" . $tournament['Nome_torneio'] . "</td>";
-						
-						$state = getTournamentState($tournament['Nome_torneio']);
-						if($state == 2){
-							echo "<td style = \"color: rgb(250,150,0);\">A decorrer</td>";
-						}
-						else if($state == 1){
-							echo "<td style = \"color: rgb(0,200,0);\">Pronto a iniciar</td>";
-						}else{
-							echo "<td style = \"color: rgb(200,0,0);\">Não Pronto</td>";
-						}
-						echo "<td><a href=\"tournament-management2.php?tname=".$tournament['Nome_torneio']."\" style=\"color:#5c3ab7;\">Gerir Torneio</a></td>";
+					if(checkIfManager($user_id)){;
+						echo "<table style=\"width:100%\">";
+						echo "<tr style=\"background: #afd2f0;\">";
+							echo "<th>Torneio</th>";
+							echo "<th> </th>";
+							echo "<th> </th>";
 						echo "</tr>";
+
+						while($tournament = mysqli_fetch_array($tournaments)){
+							echo "<tr>";
+							echo "<td>" . $tournament['Nome_torneio'] . "</td>";
+							
+							$state = getTournamentState($tournament['Nome_torneio']);
+							if($state == 2){
+								echo "<td style = \"color: rgb(250,150,0);\">A decorrer</td>";
+							}
+							else if($state == 1){
+								echo "<td style = \"color: rgb(0,200,0);\">Pronto a iniciar</td>";
+							}else{
+								echo "<td style = \"color: rgb(200,0,0);\">Não Pronto</td>";
+							}
+							echo "<td><a href=\"tournament-management2.php?tname=".$tournament['Nome_torneio']."\" style=\"color:#5c3ab7;\">Gerir Torneio</a></td>";
+							echo "</tr>";
+							
+						}
+						echo "</table>"; 
+					}
+					else{
+						echo "Não tem privilégios de gestor de nenhum torneio. Não existe conteudo a mostrar nesta página.";
+						echo "<br><br><br><br><br><br><br>";
 					}
 					$connection->close();
 				?>
-				</table> 
 				
 			</div>
 		</div>
