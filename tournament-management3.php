@@ -26,19 +26,6 @@
 			$nVoltas = mysqli_fetch_array($result_tournament);
 			//$connection->close();
 		}
-
-		function getTournamentGames($tname){
-			global $connection;
-			$query = sprintf("  SELECT jogos.Data, jogos.Nome_equipa_visitante, jogos.Nome_equipa_visitada, jogos.Jornada, 
-										jogos.Volta, slot.Hora_inicio, slot.Hora_fim, slot.Nome_campo 
-								FROM futebolamador.jogos 
-								JOIN futebolamador.slot on slot.id_slot = jogos.id_slot 
-								WHERE jogos.Nome_torneio = '%s' 
-								ORDER BY jogos.Data;", $tname); 
-						
-			$games = $connection->query($query);
-			return $games;
-		}
 	?>
 
 	<head>
@@ -109,65 +96,33 @@
 			</div>
 			<div class="9u" style="padding-top: 30px; padding-right: 40px;">
 				<h2>Tabela de Jogos: <?php echo $tname;?></h2>
-				<?php echo "<h4>Volta 1:</h4>";?>
+				<?php echo "Numero de voltas: ".$nVoltas[0];?>
 				<table style="width:100%">
 				<tr style="background: #afd2f0;">
-					<th>Jornada</th>
+                    <th>Jogo</th>
 					<th>Data</th>
 					<th>Equipa Visitada</th>
 					<th>Equipa Visitante</th>
-					<th>Horário</th>
-					<th>Campo</th>
+					<th>Jornada</th>
 				</tr>
 				<?php
 					
-					$games = getTournamentGames($tname);
+					$query = sprintf("  SELECT * FROM futebolamador.jogos 
+										WHERE jogos.Nome_torneio = '%s'
+										ORDER BY jogos.Data;", $tname); 
+					
+					$games = $connection->query($query);
 					while($game = mysqli_fetch_array($games)){
 						echo "<tr>";
-						if($game['Volta'] == 1){
-							echo "<td>" . $game['Jornada'] . "</td>";
-							echo "<td>" . $game['Data'] . "</td>";
-							echo "<td>" . $game['Nome_equipa_visitada'] . "</td>";
-							echo "<td>" . $game['Nome_equipa_visitante'] . "</td>";
-							echo "<td>" . $game['Hora_inicio'] . " - " . $game['Hora_fim'] . "</td>";
-							echo "<td>" . $game['Nome_campo'] . "</td>";
-						}
+						echo "<td>" . $game['Data'] . "</td>";
+						echo "<td>" . $game['Nome_equipa_visitada'] . "</td>";
+						echo "<td>" . $game['Nome_equipa_visitante'] . "</td>";
+						echo "<td>" . $game['Jornada'] . "</td>";
 						echo "</tr>";
 					}
+					$connection->close();
 				?>
 				</table> 
-				<?php 
-					if($nVoltas[0] > 1){
-						echo "<h4>Volta 2:</h4>";	
-						echo "<table style=\"width:100%\">";
-						echo "<tr style=\"background: #afd2f0;\">";
-							echo "<th>Jornada</th>";
-							echo "<th>Data</th>";
-							echo "<th>Equipa Visitada</th>";
-							echo "<th>Equipa Visitante</th>";
-							echo "<th>Horário</th>";
-							echo "<th>Campo</th>";
-							
-						echo"</tr>";
-							
-						$games = getTournamentGames($tname);
-						while($game = mysqli_fetch_array($games)){
-							echo "<tr>";
-							
-							if($game['Volta'] == 2){
-								echo "<td>" . $game['Jornada'] . "</td>";
-								echo "<td>" . $game['Data'] . "</td>";
-								echo "<td>" . $game['Nome_equipa_visitante'] . "</td>";
-								echo "<td>" . $game['Nome_equipa_visitada'] . "</td>";
-								echo "<td>" . $game['Hora_inicio'] . " - " . $game['Hora_fim'] . "</td>";
-								echo "<td>" . $game['Nome_campo'] . "</td>";
-							}
-							echo "</tr>";
-						}
-						echo "</table>"; 
-						$connection->close();
-					}
-				?>
 				
 			</div>
 		</div>

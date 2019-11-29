@@ -93,7 +93,7 @@
 			//Check if tournament to be created intersects another tournament already created			
 			for ($i = 0; $i < 7; $i++){
 				if($day[$i] != ""){
-					$query = sprintf("  SELECT torneios.Nome_torneio, slot.Hora_inicio, slot.Hora_fim, slot.Numero_dia, slot.Nome_campo, torneios.Data_inicio, torneios.Data_fim
+					$query = sprintf("SELECT torneios.Nome_torneio, slot.Hora_inicio, slot.Hora_fim, slot.Numero_dia, slot.Nome_campo, torneios.Data_inicio, torneios.Data_fim
 								FROM futebolamador.torneios
 								JOIN futebolamador.slot_torneios on slot_torneios.Nome_torneio = torneios.Nome_torneio
 								JOIN futebolamador.slot on slot_torneios.id_slot = slot.id_slot

@@ -117,12 +117,11 @@
                                         WHERE torneios.Nome_torneio = '%s';", $games, $tname);
                     if ($connection->query($query) === TRUE) {
                         generateGames($games);
-                        
-                    
-                    
+                        $connection->close();
+                        header('Location: tournament-management3.php?tname='.$tournament['Nome_torneio'].'');
+                       
                     }
                 }
-
             } 
 		}
 
@@ -248,25 +247,17 @@
                 array_push($completed_teams, NULL);//add ghost team
                 $nTeams+=1;
             }
-            /*
-            echo "ARRAY INICIAL ";
-            for ($i = 0; $i < $nTeams; $i++){
-                $name = $completed_teams[$i];
-                if($name !=NULL){
-                    echo $name["Nome_equipa"];
-                }else{
-                    echo "NULL";
-                }
-            }*/
 
             //Comecar a contar da data em que inicia o torneio
             $date = $tournament['Data_inicio'];
             //Numeric representation of the day of the week - 0 (for Sunday) through 6 (for Saturday)
             $dayofweek = date('w', strtotime($date)); 
             
+            $volta = 0;
             for ($j = 0; $j < $games; $j++){ // numero de voltas
                 $initialTeam = $completed_teams[1]; //team in second position
                 $initialTeamName = $initialTeam['Nome_equipa'];
+                $volta++;
                 $jornada = 0;
                 echo "VOLTA ".$j;
                 do{                                     //ate obter todas as combinações para ter uma volta 
@@ -278,25 +269,6 @@
                         }
                     }
                     $jornada++; 
-                    /*
-                    echo "JORNADA";
-                    $n2 = sizeof($paired_teams);
-                    for ($i = 0; $i < $n2; $i++){
-                        $name1 = $paired_teams[$i][0];
-                        $name2 = $paired_teams[$i][1];
-                        echo "PAR final: ";
-                        if($name1 !=NULL){
-                            echo $name1["Nome_equipa"];
-                        }else{
-                            echo "NULL";
-                        }
-                        echo " -- ";
-                        if($name2 !=NULL){
-                            echo $name2["Nome_equipa"];
-                        }else{
-                            echo "NULL";
-                        }
-                    }*/
 
                     //criar jogos da jornada
                     $n2 = sizeof($paired_teams);
@@ -310,11 +282,11 @@
                         $team2 = $paired_teams[$i][1];
                         $idSlot = $weekdays_idSlot[$dayofweek];
                         $query = sprintf("  INSERT INTO futebolamador.jogos (`Nome_torneio`, `Data`, `Nome_equipa_visitada`, 
-                                                                             `Nome_equipa_visitante`, `id_slot`, `Jornada`) 
-                                            VALUES ('%s','%s','%s','%s','%s','%s');", 
+                                                                             `Nome_equipa_visitante`, `id_slot`, `Jornada`, `Volta`) 
+                                            VALUES ('%s','%s','%s','%s','%s','%s','%s');", 
                                                                             $tournament['Nome_torneio'], $date, 
                                                                             $team1['Nome_equipa'], $team2['Nome_equipa'],
-                                                                            $idSlot, $jornada);
+                                                                            $idSlot, $jornada, $volta);
                         if ($connection->query($query) === TRUE) {
                             echo "Game created successfully";
                         }
