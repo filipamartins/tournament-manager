@@ -157,11 +157,15 @@
 						$notifications = checkNotifications($user_id);
 						if(mysqli_num_rows($notifications) !=0){
 							echo "<h4>Notificações</h4>";
+							echo "<div class=\"row\">";
 							while($notification = mysqli_fetch_array($notifications)){
-								echo "Data: ".$notification['Data']."<br>";
-								echo "Autor: ".$notification['Primeiro_nome']." ".$notification['Ultimo_nome']."<br>";
-								echo "Mensagem: ".$notification['Texto']."<br><br>";
+								echo "<div>";
+								echo "<strong>Data: </strong>".$notification['Data']."<br>";
+								echo "<strong>Autor: </strong>".$notification['Primeiro_nome']." ".$notification['Ultimo_nome']."<br>";
+								echo "<i>\"".$notification['Texto']."\"</i><br><br>";
+								echo "</div>";
 							}
+							echo "</div>";
 						}else{
 							echo "Não existem novas notificações.";
 						}
