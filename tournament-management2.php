@@ -371,12 +371,12 @@
 					<li>
 						<div class="dropdown">
 						    <button class="dropbtn">
-						      <img src="images/user.png" onerror = "this.src= 'images/foto.jpg';" style="width:auto;height:50px; border-radius:50%">
+							  <img src="images/player.jpg" onerror = "this.src= 'images/usr.png';" style="width:auto;height:50px; border-radius:30%;">
 						      <br><a>Filipa Martins</a>
 						    </button>
 						    <div class="dropdown-content">
-						      <a href="#">Ver perfil</a>
-						      <a href="#">Editar perfil</a>
+							  <a href="user-profile.php">Ver perfil</a>
+						      <a href="user-profile-edit.php">Editar perfil</a>
 						      <a href="#">Terminar sessão</a> 	
 						    </div>
 						</div>
@@ -525,6 +525,9 @@
                         echo "</form>";
                     }
                 ?>
+				<div style="text-align:left">
+					<a href="tournament-management.php?tname=<?php echo $tname;?>"><input type="button" value="<- Voltar"></a>
+				</div><br>
 			</div>
 		</div>
 	</body>

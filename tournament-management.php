@@ -120,13 +120,12 @@
 					<li>
 						<div class="dropdown">
 						    <button class="dropbtn">
-								
-							<img src="images/user.png" onerror = "this.src= 'images/foto.jpg';" style="width:auto;height:50px; border-radius:50%">
-						    <br><a>Filipa Martins</a>
+							  <img src="images/player.jpg" onerror = "this.src= 'images/usr.png';" style="width:auto;height:50px; border-radius:30%;">
+						      <br><a>Filipa Martins</a>
 						    </button>
 						    <div class="dropdown-content">
-						      <a href="#">Ver perfil</a>
-						      <a href="#">Editar perfil</a>
+							  <a href="user-profile.php">Ver perfil</a>
+						      <a href="user-profile-edit.php">Editar perfil</a>
 						      <a href="#">Terminar sessão</a> 	
 						    </div>
 						</div>
@@ -162,16 +161,19 @@
 								echo "<div>";
 								echo "<strong>Data: </strong>".$notification['Data']."<br>";
 								echo "<strong>Autor: </strong>".$notification['Primeiro_nome']." ".$notification['Ultimo_nome']."<br>";
-								echo "<i>\"".$notification['Texto']."\"</i><br><br>";
+								echo "<i>\"".$notification['Texto']."\"</i><br>";
+								echo "<a href=\"#\" style=\"color: #5c3ab7;\">ver detalhes</a><br><br>";
 								echo "</div>";
 							}
 							echo "</div>";
 						}else{
 							echo "Não existem novas notificações.";
 						}
+						echo "<h4>Torneios</h4>";
 						echo "<table style=\"width:100%\">";
 						echo "<tr style=\"background: #afd2f0;\">";
 							echo "<th>Torneio</th>";
+							echo "<th> </th>";
 							echo "<th> </th>";
 							echo "<th> </th>";
 						echo "</tr>";
@@ -190,6 +192,7 @@
 								echo "<td style = \"color: rgb(200,0,0);\">Não pronto</td>";
 							}
 							echo "<td><a href=\"tournament-management2.php?tname=".$tournament['Nome_torneio']."\" style=\"color:#5c3ab7;\">Gerir Torneio</a></td>";
+							echo "<td><a href=\"tournament-detail.php?tname=".$tournament['Nome_torneio']."\" style=\"color:#5c3ab7;\">ver detalhes</a></td>";
 							echo "</tr>";
 						}
 						echo "</table>"; 

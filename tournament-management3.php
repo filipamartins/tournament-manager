@@ -50,8 +50,15 @@
 				else if(isset($_POST["cancel_games"])){
 					$query = sprintf("DELETE FROM futebolamador.jogos WHERE jogos.Nome_torneio = '%s';", $tname);
 					if ($connection->query($query) === TRUE) {
-						echo "Games deleted successfully";
-						header('Location: tournament-management2.php?tname='.$tname.'');
+						$query = sprintf("  UPDATE futebolamador.torneios SET torneios.Estado = '%s'
+											WHERE torneios.Nome_torneio = '%s';", 0, $tname);
+						if ($connection->query($query) === TRUE) {
+							echo "Games deleted successfully";
+							header('Location: tournament-management2.php?tname='.$tname.'');
+						}
+						else {
+							echo "Error: " . $query . "<br>" . $connection->error;
+						}
                     }
                     else {
                         echo "Error: " . $query . "<br>" . $connection->error;
@@ -117,12 +124,12 @@
 					<li>
 						<div class="dropdown">
 						    <button class="dropbtn">
-							  <img src="images/user.png" onerror = "this.src= 'images/foto.jpg';" style="width:auto;height:50px; border-radius:50%">
+							  <img src="images/player.jpg" onerror = "this.src= 'images/usr.png';" style="width:auto;height:50px; border-radius:30%;">
 						      <br><a>Filipa Martins</a>
 						    </button>
 						    <div class="dropdown-content">
-						      <a href="#">Ver perfil</a>
-						      <a href="#">Editar perfil</a>
+							  <a href="user-profile.php">Ver perfil</a>
+						      <a href="user-profile-edit.php">Editar perfil</a>
 						      <a href="#">Terminar sessão</a> 	
 						    </div>
 						</div>
@@ -175,7 +182,7 @@
                             echo "<input type=\"hidden\" name=\"game\" id=\"hiddenField\" value=\"".$game['id_jogo']."\" />";
                             echo "<td><input type=\"submit\" id=\"confirm-".$game['id_jogo']."\"  name =\"delete_game\" style=\"visibility:hidden;background-color:red\"  value=\"Confirmar\"></td>";
                             echo "<td><input type=\"button\" id=\"delete-".$game['id_jogo']."\" name =\"\" onclick=\"buttonConfirm(".$game['id_jogo'].")\" value=\"Apagar\">";
-                            echo "<input type=\"button\" id=\"cancel-".$game['id_jogo']."\" style=\"visibility:hidden;\" name =\"\" onclick=\"buttonCancel(".$game['id_jogo'].")\" value=\"Cancelar\"></td>";
+                            echo "<input type=\"button\" id=\"cancel-".$game['id_jogo']."\" style=\"visibility:hidden;background-color: rgb(170,170,170);\" name =\"\" onclick=\"buttonCancel(".$game['id_jogo'].")\" value=\"Cancelar\"></td>";
                             echo "</form>";
 						}
 						echo "</tr>";
@@ -213,7 +220,7 @@
                                 echo "<input type=\"hidden\" name=\"game\" id=\"hiddenField\" value=\"".$game['id_jogo']."\" />";
                                 echo "<td><input type=\"submit\" id=\"confirm-".$game['id_jogo']."\" style=\"visibility:hidden;background-color:red;\" name =\"delete_game\"   value=\"Confirmar\"></td>";
                                 echo "<td><input type=\"button\" id=\"delete-".$game['id_jogo']."\" name =\"\" onclick=\"buttonConfirm(".$game['id_jogo'].")\" value=\"Apagar\">";
-                                echo "<input type=\"button\" id=\"cancel-".$game['id_jogo']."\" style=\"visibility:hidden;\" name =\"\" onclick=\"buttonCancel(".$game['id_jogo'].")\" value=\"Cancelar\"></td>";
+                                echo "<input type=\"button\" id=\"cancel-".$game['id_jogo']."\" style=\"visibility:hidden;background-color: rgb(170,170,170);\" name =\"\" onclick=\"buttonCancel(".$game['id_jogo'].")\" value=\"Cancelar\"></td>";
                                 echo "</form>";
 							}
 							echo "</tr>";
@@ -221,13 +228,15 @@
 						echo "</table>";
 					} 
 				?>
-				<div style="text-align:center; display:flex;">
-				<form action="tournament-management3.php?tname=<?php echo $tname;?>" method="post">
-					<input type="submit"  name="cancel_games" value="<- Voltar">
-				</form>
-				<form action="tournament-management3.php?tname=<?php echo $tname;?>" method="post">
-					<input type="submit"  name="start_tournament" style="background-color:green;" value="INICIAR TORNEIO!">
-				</form>
+				<div style="text-align:center">
+					<div style="display:inline-flex;">
+					<form action="tournament-management3.php?tname=<?php echo $tname;?>" method="post">
+						<input type="submit"  name="cancel_games" style="background-color: rgb(170,170,170);" value="Cancelar">
+					</form>
+					<form action="tournament-management3.php?tname=<?php echo $tname;?>" method="post">
+						<input type="submit"  name="start_tournament" value="Iniciar Torneio!">
+					</form>
+					</div>
 				</div>
 				<?php $connection->close(); ?>
 			</div>

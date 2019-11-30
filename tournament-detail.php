@@ -107,12 +107,12 @@
 					<li>
 						<div class="dropdown">
 						    <button class="dropbtn">
-						      <img src="images/user.png" onerror = "this.src= 'images/foto.jpg';" style="width:auto;height:50px; border-radius:50%">
+							  <img src="images/player.jpg" onerror = "this.src= 'images/usr.png';" style="width:auto;height:50px; border-radius:30%;">
 						      <br><a>Filipa Martins</a>
 						    </button>
 						    <div class="dropdown-content">
-						      <a href="#">Ver perfil</a>
-						      <a href="#">Editar perfil</a>
+							  <a href="user-profile.php">Ver perfil</a>
+						      <a href="user-profile-edit.php">Editar perfil</a>
 						      <a href="#">Terminar sessão</a> 	
 						    </div>
 						</div>
@@ -129,9 +129,9 @@
 				<section class="sidebar">
 					<ul class="default" style="padding-left: 40px;">
 						<li><a href="tournament-create.php"><strong>Criar Novo Torneio</a></strong></li>
-						<li><a href="tournament-management.php"><strong style="color:#5c3ab7;">Gestão de Torneios</a></strong></li>
+						<li><a href="tournament-management.php"><strong>Gestão de Torneios</a></strong></li>
 						<li><a href="field-management.php"><strong>Gestão de Campos</a></strong></li>
-						<li><a href="tournament-list.php"><strong>Listar Torneios</a></strong></li>
+						<li><a href="tournament-list.php"><strong style="color:#5c3ab7;">Listar Torneios</a></strong></li>
 					</ul>
 				</section>
 			</div>
@@ -228,7 +228,9 @@
 					}
 					$connection->close();
                 ?>
+				<br>
 			</div>
+			
 		</div>
 	</body>
 

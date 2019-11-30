@@ -53,7 +53,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	if ($connection->connect_errno != 0){
 		throw new Exception(mysqli_connect_errno());
 	} else{
-		echo "connected successfully";
+		//echo "connected successfully";
 
         if(!$error){
             if($number == "" and $gps != ""){
@@ -127,13 +127,12 @@ function test_input($data) {
 					<li>
 						<div class="dropdown">
 						    <button class="dropbtn">
-								
-							  <img src="images/user.png" onerror = "this.src= 'images/foto.jpg';" style="width:auto;height:50px; border-radius:50%">
+							  <img src="images/player.jpg" onerror = "this.src= 'images/usr.png';" style="width:auto;height:50px; border-radius:30%;">
 						      <br><a>Filipa Martins</a>
 						    </button>
 						    <div class="dropdown-content">
-						      <a href="#">Ver perfil</a>
-						      <a href="#">Editar perfil</a>
+							  <a href="user-profile.php">Ver perfil</a>
+						      <a href="user-profile-edit.php">Editar perfil</a>
 						      <a href="#">Terminar sessão</a> 	
 						    </div>
 						</div>
@@ -184,9 +183,12 @@ function test_input($data) {
                     Custo(€):<br>
                     <input type="text" name="cost" style = "width:18%" value="<?php echo $cost;?>">
                     <span class="error"><?php echo $costErr;?></span><br>
-                    <div style="text-align:center">
+					<div style="text-align:center">
+                    <div style="display:inline-flex;">
+                        <a href="field-management.php"><input type="button"  style="background-color: rgb(170,170,170);" value="Cancelar"></a><br>
                         <input type="submit" value="Criar"><br>
                     </div>
+					</div>
 			    </form>
 			</div>
 		</div>
