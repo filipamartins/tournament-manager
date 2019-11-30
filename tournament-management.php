@@ -19,7 +19,8 @@
 		$query = sprintf("  SELECT * FROM futebolamador.torneios 
 							WHERE torneios.Nome_torneio in (SELECT gestores_torneio_torneios.Nome_torneio 
 															FROM futebolamador.gestores_torneio_torneios 
-															WHERE gestores_torneio_torneios.CC = '%s');", $user_id); 
+															WHERE gestores_torneio_torneios.CC = '%s')
+							ORDER BY torneios.Nome_torneio;", $user_id ); 
 		
 		$tournaments = $connection->query($query);
 	}

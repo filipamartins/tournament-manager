@@ -138,7 +138,8 @@
 		function getTeams($tname){
 			global $connection;
 			$query = sprintf(  "SELECT * FROM futebolamador.equipas 
-								WHERE equipas.Nome_torneio = \"%s\";", $tname );
+								WHERE equipas.Nome_torneio = \"%s\"
+								ORDER BY equipas.Nome_equipa;", $tname );
 
 			$teams = $connection->query($query);
 			return $teams;

@@ -15,7 +15,7 @@
 	if ($connection->connect_errno != 0){
 		throw new Exception(mysqli_connect_errno());
 	} else{
-		$tournaments = $connection->query("SELECT * FROM futebolamador.torneios;");
+		$tournaments = $connection->query("SELECT * FROM futebolamador.torneios ORDER BY torneios.Nome_torneio;");
 		//echo "connected successfully";
 	}
 
