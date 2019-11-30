@@ -222,15 +222,24 @@
 					}
 					$ongoing = tournamentState($tname);
 					if($ongoing[0] == 1){
-						echo "<div style=\"text-align:right;\">";
-						echo "<a href=\"tournament-games.php?tname=".$tname."\"><input type=\"submit\" name=\"\" value=\"Ver Jogos ->\"></a>";
-						echo "</div><br>";
+						echo"<div style=\"text-align:left\">";
+							echo "<div style=\"text-align:inline-flex;\">";
+								echo "<a href=\"tournament-list.php\"><input type=\"button\" value=\"<- Voltar\"></a>";
+								echo"<div style=\"float:right\">";
+									echo "<a href=\"tournament-games.php?tname=".$tname."\"><input type=\"submit\" name=\"\" value=\"Ver Jogos ->\"></a>";
+								echo "</div>";
+								echo "</div>";
+						echo "</div>";
+					}
+					else{
+						echo"<div style=\text-align:left\">";
+							echo"<a href=\"tournament-list.php\"><input type=\"button\" value=\"<- Voltar\"></a>";
+						echo"</div>";
 					}
 					$connection->close();
-                ?>
+				?>
 				<br>
 			</div>
-			
 		</div>
 	</body>
 

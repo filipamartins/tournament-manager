@@ -518,7 +518,7 @@
                             echo "</div>";
                             echo "<div>";
                                 echo "<div style=\"text-align:right\">";
-                                echo "<input type=\"submit\" name=\"submit_games\" value=\"Gerar Jogos\"><br><br>";
+                                echo "<input type=\"submit\" name=\"submit_games\" value=\"Gerar Jogos\">";
                                 echo "</div>";
                             echo "</div>";
                         echo "</div>";
