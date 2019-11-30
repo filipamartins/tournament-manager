@@ -59,6 +59,16 @@
 			return $captain;
 		}
 
+		function tournamentState($tname){
+			global $connection;
+			$query = sprintf("  SELECT torneios.Estado FROM futebolamador.torneios 
+								WHERE torneios.Nome_torneio = \"%s\";", $tname );
+	
+			$result = $connection->query($query);
+			$ongoing = mysqli_fetch_array($result);
+			return $ongoing;
+		}
+
     ?>
 
 	<head>
@@ -208,7 +218,13 @@
 							}
 							echo"</tr>";
 						}
-						echo "</table><br>";
+						echo "</table>";
+					}
+					$ongoing = tournamentState($tname);
+					if($ongoing[0] == 1){
+						echo "<div style=\"text-align:right;\">";
+						echo "<a href=\"tournament-games.php?tname=".$tname."\"><input type=\"submit\" name=\"\" value=\"Ver Jogos ->\"></a>";
+						echo "</div><br>";
 					}
 					$connection->close();
                 ?>

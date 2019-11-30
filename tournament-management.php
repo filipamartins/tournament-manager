@@ -6,7 +6,6 @@
 -->
 <html lang="en">
 
-
 <?php
  	$user_id = 11111111;
 	require_once "connect.php";
@@ -17,7 +16,6 @@
 		throw new Exception(mysqli_connect_errno());
 	} else{
 		//echo "connected successfully";
-		
 		$query = sprintf("  SELECT * FROM futebolamador.torneios 
 							WHERE torneios.Nome_torneio in (SELECT gestores_torneio_torneios.Nome_torneio 
 															FROM futebolamador.gestores_torneio_torneios 
@@ -38,14 +36,22 @@
 		return true;
 	}
 
-	function getNumberGames($tname){
+	function checkIfNotifications($user_id){
+		$query = sprintf("  SELECT * FROM futebolamador.torneios 
+							WHERE torneios.Nome_torneio in (SELECT gestores_torneio_torneios.Nome_torneio 
+															FROM futebolamador.gestores_torneio_torneios 
+															WHERE gestores_torneio_torneios.CC = '%s');", $user_id); 
+
+	}
+
+	function tournamentState($tname){
 		global $connection;
-		$query = sprintf("  SELECT count(*) FROM futebolamador.jogos 
-							WHERE jogos.Nome_torneio = \"%s\";", $tname );
+		$query = sprintf("  SELECT torneios.Estado FROM futebolamador.torneios 
+							WHERE torneios.Nome_torneio = \"%s\";", $tname );
 
 		$result = $connection->query($query);
-		$number_games = mysqli_fetch_array($result);
-		return $number_games;
+		$ongoing = mysqli_fetch_array($result);
+		return $ongoing;
 	}
 
 	function getTournamentState($tname){
@@ -58,12 +64,12 @@
 
 		$result = $connection->query($query);
 		
-		while($row = mysqli_fetch_array($result)){ 
+		while($row = mysqli_fetch_array($result)){
 			if($row[0] >= 2 and $row[1] == 1) //se existem pelo menos duas equipas completas
 				$ready = true;
 		}
-		$number_games = getNumberGames($tname);
-		if($ready and $number_games[0] != 0 ){
+		$ongoing = tournamentState($tname);
+		if($ready and $ongoing[0] == 1 ){
 			return 2; //A decorrer
 		}
 		else if($ready){
@@ -143,7 +149,8 @@
 				<img src="images/tournament4.jpg" onerror = "this.src= 'images/tournament11.jpg';" style="max-width:100%;">
 				<h2>Gestão de Torneios</h2>
 				<?php
-					if(checkIfManager($user_id)){;
+					if(checkIfManager($user_id)){
+						checkIfNotifications();
 						echo "<table style=\"width:100%\">";
 						echo "<tr style=\"background: #afd2f0;\">";
 							echo "<th>Torneio</th>";
@@ -162,7 +169,7 @@
 							else if($state == 1){
 								echo "<td style = \"color: rgb(0,200,0);\">Pronto a iniciar</td>";
 							}else{
-								echo "<td style = \"color: rgb(200,0,0);\">Não Pronto</td>";
+								echo "<td style = \"color: rgb(200,0,0);\">Não pronto</td>";
 							}
 							echo "<td><a href=\"tournament-management2.php?tname=".$tournament['Nome_torneio']."\" style=\"color:#5c3ab7;\">Gerir Torneio</a></td>";
 							echo "</tr>";

@@ -71,7 +71,8 @@
 						
 			$games = $connection->query($query);
 			return $games;
-        }
+		}
+		
         function test_input($data) {
             $data = trim($data);
             $data = stripslashes($data);
@@ -126,7 +127,6 @@
 						    </div>
 						</div>
 					</li>
-					
 					<!-- <li><a href="help.html">Ajuda</a></li>-->
 				</ul>
 			</nav>
@@ -146,7 +146,7 @@
 				</section>
 			</div>
 			<div class="9u" style="padding-top: 30px; padding-right: 40px;">
-				<h2>Tabela de Jogos: <?php echo $tname;?></h2>
+				<h2>Jogos a gerar: <?php echo $tname;?></h2>
 				<?php echo "<h4>Volta 1:</h4>";?>
 				<table style="width:100%">
 				<tr style="background: #afd2f0;">

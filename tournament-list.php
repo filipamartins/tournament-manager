@@ -19,14 +19,14 @@
 		//echo "connected successfully";
 	}
 
-	function getNumberGames($tname){
+	function tournamentState($tname){
 		global $connection;
-		$query = sprintf("  SELECT count(*) FROM futebolamador.jogos 
-							WHERE jogos.Nome_torneio = \"%s\";", $tname );
+		$query = sprintf("  SELECT torneios.Estado FROM futebolamador.torneios 
+							WHERE torneios.Nome_torneio = \"%s\";", $tname );
 
 		$result = $connection->query($query);
-		$number_games = mysqli_fetch_array($result);
-		return $number_games;
+		$ongoing = mysqli_fetch_array($result);
+		return $ongoing;
 	}
 
 	function getTournamentState($tname){
@@ -43,8 +43,8 @@
 			if($row[0] >= 2 and $row[1] == 1)
 				$ready = true;
 		}
-		$number_games = getNumberGames($tname);
-		if($ready and $number_games[0] != 0 ){
+		$ongoing = tournamentState($tname);
+		if($ready and $ongoing[0] == 1 ){
 			return 2; //A decorrer
 		}
 		else if($ready){

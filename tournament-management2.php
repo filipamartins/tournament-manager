@@ -185,40 +185,41 @@
 			return $slots;
 		}
 
-        function getNumberGames($tname){
-            global $connection;
-            $query = sprintf("  SELECT count(*) FROM futebolamador.jogos 
-                                WHERE jogos.Nome_torneio = \"%s\";", $tname );
-    
-            $result = $connection->query($query);
-            $number_games = mysqli_fetch_array($result);
-            return $number_games;
-        }
-
-        function getTournamentState($tname){
-            global $connection;
-            $ready = false;
-    
-            $query = sprintf("  SELECT count(*), equipas.estado FROM futebolamador.equipas 
-                                WHERE equipas.Nome_torneio = \"%s\"
-                                GROUP BY equipas.estado;", $tname );
-    
-            $result = $connection->query($query);
-            while($row = mysqli_fetch_array($result)){
-                if($row[0] >= 2 and $row[1] == 1)
-                    $ready = true;
-            }
-            $number_games = getNumberGames($tname);
-            if($ready and $number_games[0] != 0 ){
-                return 2; //A decorrer
-            }
-            else if($ready){
-                return 1; //Pronto a iniciar
-            }
-            else{
-                return 0; //Não pronto
-            }
-        }
+        function tournamentState($tname){
+			global $connection;
+			$query = sprintf("  SELECT torneios.Estado FROM futebolamador.torneios 
+								WHERE torneios.Nome_torneio = \"%s\";", $tname );
+	
+			$result = $connection->query($query);
+			$ongoing = mysqli_fetch_array($result);
+			return $ongoing;
+		}
+	
+		function getTournamentState($tname){
+			global $connection;
+			$ready = false;
+	
+			$query = sprintf("  SELECT count(*), equipas.estado FROM futebolamador.equipas 
+								WHERE equipas.Nome_torneio = \"%s\"
+								GROUP BY equipas.estado;", $tname );
+	
+			$result = $connection->query($query);
+			
+			while($row = mysqli_fetch_array($result)){
+				if($row[0] >= 2 and $row[1] == 1)
+					$ready = true;
+			}
+			$ongoing = tournamentState($tname);
+			if($ready and $ongoing[0] == 1 ){
+				return 2; //A decorrer
+			}
+			else if($ready){
+				return 1; //Pronto a iniciar
+			}
+			else{
+				return 0; //Não pronto
+			}
+		}
         
         function generateGames($games){
             global $connection;
@@ -415,9 +416,13 @@
 							<input type="submit" name="submit_date" id ="submit" style="visibility:hidden;" value="Gravar">
 						</div>
 					</div>
-					<input type="checkbox" name="change" value="true" id ="check" onclick="getSaveButton()">Alterar datas
-					</form>
-				
+					<?php 
+						$ongoing = tournamentState($tname);
+						if(!$ongoing[0]){
+							echo "<input type=\"checkbox\" id =\"check\" onclick=\"getSaveButton()\">Alterar datas";
+						}
+					?>
+				</form>
 				
 				<div class="row">
 					<div>
@@ -434,7 +439,6 @@
 				if(mysqli_num_rows($teams) !=0){	
 					echo "<div>";
 					echo "<form action=\"tournament-management2.php?tname=".$tname."\" method=\"post\">";
-					
 						echo "<br><select name=\"captains\">";
 							echo "<option value=\"\" selected hidden>Promover capitão a gestor >></option>;";
 							
@@ -444,13 +448,11 @@
 										.$captain['Primeiro_nome']." ".$captain['Ultimo_nome']." - ".$team['Nome_equipa'].
 									"</option>";
 							}
-								
 						echo "</select>";
 					echo "</div>";
 					echo "<div>";
 						echo "<br><input type=\"submit\" name =\"submit_manager\" value=\"Gravar\">";
 					echo "</div>";
-						
 					echo "</form>";
 				}
 				?>
