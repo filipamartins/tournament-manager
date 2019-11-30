@@ -36,12 +36,16 @@
 		return true;
 	}
 
-	function checkIfNotifications($user_id){
-		$query = sprintf("  SELECT * FROM futebolamador.torneios 
-							WHERE torneios.Nome_torneio in (SELECT gestores_torneio_torneios.Nome_torneio 
-															FROM futebolamador.gestores_torneio_torneios 
-															WHERE gestores_torneio_torneios.CC = '%s');", $user_id); 
-
+	function checkNotifications($user_id){
+		global $connection;
+		$query = sprintf("  SELECT utilizadores.Primeiro_nome, utilizadores.Ultimo_nome, notificacoes.Data, notificacoes.Texto 
+							FROM futebolamador.notificacoes 
+							JOIN futebolamador.notifica ON notificacoes.id_notificacao = notifica.id_notificacao 
+							JOIN futebolamador.utilizadores ON utilizadores.CC = notifica.CC_autor 
+							WHERE notifica.CC = '%s' 
+							ORDER BY notificacoes.Data;", $user_id );
+		$notifications = $connection->query($query);
+		return $notifications;
 	}
 
 	function tournamentState($tname){
@@ -150,7 +154,17 @@
 				<h2>Gestão de Torneios</h2>
 				<?php
 					if(checkIfManager($user_id)){
-						checkIfNotifications();
+						$notifications = checkNotifications($user_id);
+						if(mysqli_num_rows($notifications) !=0){
+							echo "<h4>Notificações</h4>";
+							while($notification = mysqli_fetch_array($notifications)){
+								echo "Data: ".$notification['Data']."<br>";
+								echo "Autor: ".$notification['Primeiro_nome']." ".$notification['Ultimo_nome']."<br>";
+								echo "Mensagem: ".$notification['Texto']."<br><br>";
+							}
+						}else{
+							echo "Não existem novas notificações.";
+						}
 						echo "<table style=\"width:100%\">";
 						echo "<tr style=\"background: #afd2f0;\">";
 							echo "<th>Torneio</th>";
