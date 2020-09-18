@@ -10,7 +10,7 @@
         $tname = $_GET["tname"];
 
 		require_once "connect.php";
-		mysqli_report(MYSQLI_REPORT_STRICT);// throw errors, not warnings
+		mysqli_report(MYSQLI_REPORT_STRICT);
 
 		$connection = new mysqli($host, $db_user, $db_password, $db_name);
 		if ($connection->connect_errno != 0){
@@ -94,14 +94,12 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="description" content="" />
 		<meta name="keywords" content="" />
-		<!--[if lte IE 8]><script src="js/html5shiv.js"></script><![endif]-->
 		<script src="js/jquery.min.js"></script>
 		<script src="js/skel.min.js"></script>
 		<script src="js/skel-layers.min.js"></script>
 		<script src="js/init.js"></script>
         <script src="js/tournament.js"></script>
 		<noscript>
-		 <!--	<link rel="stylesheet" href="css/skel.css" /> -->
 			<link rel="stylesheet" href="css/style.css"/>
 			<link rel="stylesheet" href="css/style-xlarge.css" />
 		</noscript>
@@ -109,17 +107,13 @@
 	<body>
 		<!-- Header -->
 		<header id="header">
-			<h1><a href="index.html">Futebol Amador</a></h1>
+			<h1><a href="">Futebol Amador</a></h1>
 			<nav id="nav">
 				<ul>
 					<li><a href="tournament.php">Torneios</a></li>
 					<li><a href="#">Equipas</a></li>
 					<li>
 						<a href="#" class="icon rounded fa-bell"></a>
-						<!--<button class="notification">
-							<a class="icon rounded fa-bell">
-							<img src="images/bell_notification.png" style="width:auto;height:25px;">
-						</button>-->
 					</li>
 					<li>
 						<div class="dropdown">
@@ -134,7 +128,6 @@
 						    </div>
 						</div>
 					</li>
-					<!-- <li><a href="help.html">Ajuda</a></li>-->
 				</ul>
 			</nav>
 		</header>
