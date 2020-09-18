@@ -61,6 +61,8 @@ Access the browser at: ``localhost/tournament-manager/tournament.php``
 
 ## Usage
 
+![](1.png)
+
 From the home page a user can access and edit his profile by clicking on the top right icon or select the desired option in the sidebar.
 
 The structure of the application (pages) is as follows (information between ``()`` can be hidden if the required conditions are not satisfied): 
@@ -80,6 +82,6 @@ The structure of the application (pages) is as follows (information between ``()
 
 -> List tournaments -> Tournament details -> (Game details)
 ```
- 
+
 ## Contact
 Created by [@filipamartins](https://github.com/filipamartins) - feel free to contact me through filipa.af.martins@gmail.com.
